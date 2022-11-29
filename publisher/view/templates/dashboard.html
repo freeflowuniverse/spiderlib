@@ -1,0 +1,19 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css" />
+    <script src="/static/htmx.min.js"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
+</head>
+
+<span hx-get="/dashboard_navbar" hx-trigger="load"></span>
+<div class="flex pt-20 overflow-hidden bg-gray-50 dark:bg-gray-900 h-full">
+
+    <span hx-get="@dashboard.sidebar" hx-trigger="load once"></span>
+
+    <span hx-trigger="click target:#email-btn" hx-get="insert_auth_listener"></span>
+    <div id="main-content" class="relative p-12 w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+        <main id="dashboard-container" 
+            hx-get="@current_url" hx-trigger="load once">
+        </main>
+    </div>
+
+</div>

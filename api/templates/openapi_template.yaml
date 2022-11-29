@@ -1,0 +1,24 @@
+openapi: 3.0.0
+info:
+  version: @{api.info.version}
+  title: @{api.info.title}
+  description: @{api.info.description}
+
+servers: 
+@ for server in api.servers {
+  - url: server
+}
+
+# Basic authentication
+components: 
+@ for component in api.components {
+  component 
+}
+ 
+security:
+  - BasicAuth: []
+
+paths: 
+@ for key, path in api.paths {
+  path 
+}
