@@ -68,6 +68,7 @@ pub fn (mut app App) site(path string) vweb.Result {
 	sitename := app.req.url.split('/')[2]
 	// checks if there is cached access cookie for site
 	access := app.site_get_access(sitename)
+	site := app.get_site(sitename)
 	println('here; $access')
 	
 	// if access.right == .block || access.status == .no_access {

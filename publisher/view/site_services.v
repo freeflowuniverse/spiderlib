@@ -39,7 +39,8 @@ fn (mut app App) get_site(sitename string) !Site {
 	})
 
 	data := {
-		'user': 'user.name'
+		'username': app.user.name
+		'sitename': sitename
 	}
 
 	request := http.Request{
