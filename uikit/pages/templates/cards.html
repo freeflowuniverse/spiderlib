@@ -1,0 +1,7 @@
+
+<span hx-get="/sites_filterbar" hx-target="this" hx-trigger="load"></span>
+<div class="grid grid-cols-1 gap-4 mt-4 w-full md:grid-cols-2 xl:grid-cols-3">
+    @for item in cards.content
+        @{item.html()}
+    @end
+</div>
