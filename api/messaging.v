@@ -1,4 +1,4 @@
-module vapi
+module api
 
 pub struct FunctionCall {
 pub:

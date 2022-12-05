@@ -1,18 +1,18 @@
 module api
 
 import freeflowuniverse.spiderlib.auth.jwt
-import freeflowuniverse.spiderlib.publisher2
+import freeflowuniverse.spiderlib.publisher.publisher
 import vweb
 import json
 import sync
-import freeflowuniverse.spiderlib.vapi { FunctionCall }
+import freeflowuniverse.spiderlib.api { FunctionCall }
 
 
 [post]
 pub fn (mut app App) get_sites(token string) vweb.Result {
 
 	// sets user from token
-	mut user := publisher2.User {}
+	mut user := publisher.User {}
 	if jwt.verify_jwt(token) {
 		user = jwt.get_user(token) or {panic(err)}
 	}

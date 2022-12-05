@@ -1,4 +1,4 @@
-module publisher2
+module publisher
 
 import os
 import freeflowuniverse.crystallib.pathlib

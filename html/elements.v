@@ -1,4 +1,4 @@
-module ui_kit
+module html
 
 import freeflowuniverse.crystallib.pathlib { Path }
 import freeflowuniverse.spiderlib.htmx { HTMX }
@@ -20,7 +20,8 @@ struct Element {
 // }
 
 pub fn (button Button) html() string {
-	return $tmpl('templates/elements/button.html')
+	return '<button></button>'
+	// return $tmpl('templates/elements/button.html')
 }
 
 struct SVG {
@@ -41,13 +42,17 @@ struct Heading {
 
 }
 
+struct Button {
+	inner string
+}
+
 struct Paragraph {
 
 }
 
-struct Form {
-	action Action
-}
+// struct Form {
+// 	action Action
+// }
 
 struct Input {
 

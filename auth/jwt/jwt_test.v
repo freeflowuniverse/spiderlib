@@ -17,7 +17,6 @@ import vweb
 // creates user jwt cookie, enables session keeping
 fn test_make_token() {
 	
-
 	token := make_token(User{name: 'timur'})
 	panic('yok: $token')
 }

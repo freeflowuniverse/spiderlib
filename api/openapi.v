@@ -1,4 +1,4 @@
-module vapi
+module api
 
 import net.http
 

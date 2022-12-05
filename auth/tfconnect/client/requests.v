@@ -63,6 +63,5 @@ fn (mut clinet ClientApp) callback()! vweb.Result {
 
 	initial_data := data.load(query)!
 	res := request_to_server_to_verify(initial_data)!
-	println('yo1 $res')
 	return clinet.text("${res.body}")
 }

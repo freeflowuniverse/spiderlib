@@ -1,4 +1,4 @@
-module ui_kit
+module uikit
 
 import freeflowuniverse.crystallib.pathlib
 

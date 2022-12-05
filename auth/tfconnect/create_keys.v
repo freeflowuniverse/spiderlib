@@ -1,3 +1,5 @@
+module tfconnect
+
 // Generate new kyes for application server and set it into environment variables.
 
 import os
@@ -26,5 +28,5 @@ pub fn create_keys()! {
 }
 
 fn main() {
-	create_keys()!
+	create_keys() or { panic(err) }
 }

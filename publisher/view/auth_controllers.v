@@ -8,6 +8,7 @@ import json
 import rand
 import vweb.sse { SSEMessage }
 import time
+import freeflowuniverse.spiderlib.auth.tfconnect
 import net.smtp
 import crypto.rand as crypto_rand
 import os
@@ -174,12 +175,12 @@ pub fn (mut app App) login_service(email string) vweb.Result {
 		authenticated: false
 	}
 	user := User { name: email, emails: [email_obj] }
-	lock app.publisher{
-		if app.publisher.users[email] == User{} {
-			mut new_user := app.publisher.user_add(email)
-			new_user.emails = [email_obj]
-		}
-	}
+	// lock app.publisher{
+	// 	if app.publisher.users[email] == User{} {
+	// 		mut new_user := app.publisher.user_add(email)
+	// 		new_user.emails = [email_obj]
+	// 	}
+	// }
 	token := make_token(user)
 	app.set_cookie(name: 'token', value: token)
 	return app.ok('')
@@ -213,4 +214,30 @@ pub fn (mut app App) auth_update(email string) vweb.Result {
 	}
 
 	return app.server_error(501)
+}
+
+struct TFConnectResponse {
+	email string
+	identifier string
+}
+
+["/callback"]
+pub fn (mut app App) callback() vweb.Result {
+	// gets tfconnect response
+	resp := tfconnect.callback(app.query.clone()) or { panic(err) }
+
+	response := json.decode(TFConnectResponse, resp) or {
+		panic('cannot decode resp')
+	}
+
+	user := User {
+		name: response.identifier
+		emails: [Email {address: response.email,authenticated: true}]
+	}
+	app.user = user
+	token := make_token(user)
+	app.set_cookie(name: 'token', value: token)
+
+	app.redirect('/')
+	return app.html('ok')
 }

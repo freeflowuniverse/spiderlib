@@ -8,5 +8,16 @@
       </div>
       <div id="new-products-chart"></div>
       <p class="text-white my-2">@card.description</p>
+        <!-- Card Footer -->
+        <div class="flex justify-between items-center pt-3 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
+        <div>
 
+          
+        </div>
+        <div class="flex-shrink-0">
+            @for button in card.footer
+                @button.html()
+            @end
+        </div>
+        </div>
     </div>

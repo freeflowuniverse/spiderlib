@@ -3,14 +3,19 @@ module api
 import vweb
 import time { Time }
 import os
-import ui_kit { Dashboard }
-import freeflowuniverse.spiderlib.publisher2 { Publisher, User }
-import freeflowuniverse.spiderlib.vapi { FunctionCall, FunctionResponse }
+import uikit.shell { Dashboard }
+import freeflowuniverse.spiderlib.publisher.publisher { Publisher, User }
+import freeflowuniverse.spiderlib.api { FunctionCall, FunctionResponse }
 import freeflowuniverse.crystallib.pathlib
 
 const (
 	port = 8080
 )
+
+
+pub fn (mut app App) before_request() {
+	println('ye')
+}
 
 pub fn new_app() &App {
 	mut app := &App{

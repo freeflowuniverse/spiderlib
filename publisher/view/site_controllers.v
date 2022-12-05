@@ -4,7 +4,7 @@ import vweb
 import os
 import freeflowuniverse.crystallib.pathlib { Path }
 import freeflowuniverse.crystallib.publisher2 { Access, AccessLog, Site }
-import ui_kit
+import freeflowuniverse.spiderlib.uikit
 import time
 import net.html
 
@@ -13,9 +13,9 @@ pub fn (mut app App) site_get_access(name string) Access {
 	cookie := app.get_cookie(name) or { '' }
 	return get_access(cookie, app.user.name) or {
 		mut access := Access{}
-		rlock app.publisher {
-			access = app.publisher.get_access(app.user, name)
-		}
+		// rlock app.publisher {
+		// 	access = app.publisher.get_access(app.user, name)
+		// }
 		// app.create_access_cookie(name, access)
 		return access
 	}
@@ -31,33 +31,24 @@ pub fn (mut app App) site_get_access(name string) Access {
 pub fn (mut app App) site_log(path string) vweb.Result {
 	sitename := path.split('/')[1]
 
-	log := AccessLog{
-		user: app.publisher.users[app.user.name]
-		path: Path{
-			path: path
-		}
-		time: time.now()
-	}
+	// log := AccessLog{
+	// 	user: app.publisher.users[app.user.name]
+	// 	path: Path{
+	// 		path: path
+	// 	}
+	// 	time: time.now()
+	// }
 
-	lock app.publisher {
-		app.publisher.sites[sitename].logs << log
-	}
+	// lock app.publisher {
+	// 	app.publisher.sites[sitename].logs << log
+	// }
 	return app.text('')
-}
-
-// getter function for site, return site with given name
-fn (mut app App) get_site(sitename string) Site {
-	mut site := Site{}
-	rlock app.publisher {
-		site = app.publisher.sites[sitename]
-	}
-	return site
 }
 
 fn (mut app App) get_access(sitename string) Access {
 	mut access := Access{}
-	rlock app.publisher {
-		access = app.publisher.get_access(app.user, sitename)
-	}
+	// rlock app.publisher {
+	// 	access = app.publisher.get_access(app.user, sitename)
+	// }
 	return access
 }

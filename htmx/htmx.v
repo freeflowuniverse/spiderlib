@@ -1,7 +1,6 @@
-module ui_kit
+module htmx
 
 import freeflowuniverse.crystallib.pathlib { Path }
-import freeflowuniverse.spiderlib.htmx { HTMX }
 
 type Pathbool = Path | bool
 

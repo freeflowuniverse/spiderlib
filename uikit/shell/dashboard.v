@@ -1,5 +1,7 @@
-module ui_kit
+module shell
+
 import vweb
+import freeflowuniverse.spiderlib.uikit.partials
 
 struct App {
 	vweb.Context
@@ -8,8 +10,8 @@ struct App {
 pub struct Dashboard {
 pub mut:
 	logo_path string
-	navbar Navbar
-	sidebar string
+	navbar partials.Navbar
+	sidebar partials.Sidebar
 	footer string
 	default_content string
 	template string = "./dashboard.html"
@@ -19,15 +21,5 @@ pub mut:
 
 pub fn (dashboard Dashboard) render() string {
 	current_url:= '/home'
-	return $tmpl('templates/layouts/dashboard.html')
-}
-
-pub fn (login Login) render() string {
-	current_url:= '/home'
-	return $tmpl('templates/auth/login.html')
-}
-
-pub fn (navbar Navbar) render() string {
-	current_url:= '/home'
-	return $tmpl('templates/components/navbar.html')
+	return $tmpl('templates/dashboard.html')
 }

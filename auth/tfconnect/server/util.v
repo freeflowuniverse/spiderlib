@@ -3,8 +3,6 @@ import net.http
 import json
 import toml
 
-
-
 struct CustomResponse {
 	status  int
 	message string

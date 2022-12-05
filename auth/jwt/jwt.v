@@ -11,7 +11,7 @@ import time
 import net.smtp
 import crypto.rand as crypto_rand
 import os
-import freeflowuniverse.spiderlib.publisher2 { Publisher, User, Email, Access }
+import freeflowuniverse.spiderlib.publisher.publisher { Publisher, User, Email, Access }
 import vweb
 
 // JWT code in this page is from 

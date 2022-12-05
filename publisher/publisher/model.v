@@ -1,4 +1,4 @@
-module publisher2
+module publisher
 
 import time { Time }
 import freeflowuniverse.crystallib.pathlib { Path }
@@ -52,17 +52,6 @@ fn (mut p Publisher) group_add(name_ string) &Group {
 
 // pub fn (p Publisher) get_user_sites(user User)
 
-pub fn (mut p Publisher) site_add(name_ string, type_ SiteType) &Site {
-	mut name := texttools.name_fix(name_)
-	mut u := Site{
-		name: name
-		publisher: &p
-		sitetype: type_
-	}
-	p.sites[name] = u
-	return &u
-}
-
 pub fn (mut p Publisher) acl_add(name_ string) &ACL {
 	mut name := texttools.name_fix(name_)
 	mut u := ACL{
@@ -91,6 +80,8 @@ pub:
 	publisher &Publisher [str: skip; skip]// pointer to sites
 	sitetype  SiteType
 pub mut:
+	title string
+	description string
 	path           Path // path where site can be found
 	authentication Authentication
 	logs           []AccessLog = []
@@ -109,18 +100,6 @@ pub fn (p Publisher) get_sites_accessible(username string) map[string]Site {
 		user_access := p.get_access(p.users[username], name)
 		if user_access.right == Right.read || user_access.right == Right.write {
 			accesible_sites[name] = site
-		}
-	}
-	return accesible_sites
-}
-
-// returns the sites that the user has read or write access to
-pub fn (p Publisher) get_sites(user User) []Site {
-	mut accesible_sites := []Site{}
-	for name, site in p.sites {
-		user_access := p.get_access(p.users[user.name], name)
-		if user_access.right == Right.read || user_access.right == Right.write {
-			accesible_sites << site
 		}
 	}
 	return accesible_sites
@@ -347,6 +326,7 @@ pub struct User {
 pub:
 	name string
 pub mut:
+	tfconnect string // tfconnect identifier
 	emails  []Email
 	pubkeys []string // optional
 	sshkeys []string // optional

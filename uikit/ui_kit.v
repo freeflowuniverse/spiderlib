@@ -1,9 +1,10 @@
-module ui_kit
+module uikit
 
 import freeflowuniverse.crystallib.publisher2 { User }
 import freeflowuniverse.crystallib.pathlib
 import vweb
 import os
+import freeflowuniverse.spiderlib.uikit.shell
 
 pub interface Component {
 	template string // path to html template
@@ -32,3 +33,8 @@ pub:
 	redirect     string
 	access_check Routekeeper
 }
+
+// pub struct UserInterface {
+// 	shell shell.Shell
+// 	pages []Page
+// }
