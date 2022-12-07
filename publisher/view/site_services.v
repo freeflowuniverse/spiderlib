@@ -27,7 +27,7 @@ pub fn (mut app App) get_sites() ![]Site {
 		data: json.encode(data),
 	}
 	result := request.do()!
-	sites := json.decode([]Site, result.body)!
+	sites := json.decode([]Site, result.body) or {panic('nasss: $err')}
 	return sites
 }
 
@@ -43,13 +43,23 @@ fn (mut app App) get_site(sitename string) !Site {
 		'sitename': sitename
 	}
 
+	mut username := app.user.name
+	if username == '' {
+		username = 'guest'
+	}
+
 	request := http.Request{
-		url: "http://localhost:8080/get_site"
-		method: http.Method.post
+		url: "http://localhost:8080/get_site/$username/$sitename"
+		method: http.Method.get
 		header: header,
 		data: json.encode(data),
 	}
+
 	result := request.do()!
+	println('result: $result')
+	if result.body == 'email_required' {
+		return error('email_required')
+	}
 	site := json.decode(Site, result.body)!
 	return site
 }

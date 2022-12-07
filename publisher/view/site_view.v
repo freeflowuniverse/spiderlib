@@ -3,7 +3,7 @@ module view
 import vweb
 import os
 import freeflowuniverse.crystallib.pathlib
-import freeflowuniverse.crystallib.publisher2 { Site }
+import freeflowuniverse.spiderlib.publisher.publisher { Site }
 import freeflowuniverse.spiderlib.htmx { HTMX }
 import freeflowuniverse.spiderlib.uikit.partials { Card }
 import freeflowuniverse.spiderlib.uikit.pages { Cards }
@@ -54,34 +54,33 @@ pub fn (mut app App) site_preview(sitename string) vweb.Result {
 	return $vweb.html()
 }
 
+// gateway to viewing the site
+// if user can access site, site is mounted and function redirects to mount url
+// otherwise redirects to auth views
+['/site/view/:sitename']
+pub fn (mut app App) site_view(sitename string) vweb.Result {
+	
+	site := app.get_site(sitename) or {
+		if err.msg == 'email_required' {
+			return app.redirect('/login')
+		} else {
+			panic('error: $err')
+		} Site{}
+	}
+	
+	app.mount_static_folder_at(os.resource_abs_path('testfolder') ,'/testurl')
+
+	// return app.redirect('/sites/$sitename/index.html')
+	return app.redirect('/sites/$sitename/index.html')
+}
+
+
+
 // checks if user has right to access site
 // if so responds with site asset requests and injects logger htmx
 ['/sites/:path...']
 pub fn (mut app App) site(path string) vweb.Result {
 	
-	// site := app.site_get() or {
-	// 	handle_redirect(err)
-	// }
-
-	
-	// HX-Location: {"path":"/test2", "target":"#testdiv"}
-	sitename := app.req.url.split('/')[2]
-	// checks if there is cached access cookie for site
-	access := app.site_get_access(sitename)
-	site := app.get_site(sitename)
-	println('here; $access')
-	
-	// if access.right == .block || access.status == .no_access {
-	// 	// TODO: return blocked page
-	// 	return app.html('')
-	// }
-		
-	if access.status == .email_required {
-		return app.login()
-	} else if access.status == .auth_required {
-		return app.login()
-	}
-
 	// TODO: os.read_file('mermaid.js.map') doesn't work
 	if path.ends_with('.map') {
 		return app.ok('')

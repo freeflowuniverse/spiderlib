@@ -10,6 +10,7 @@ import vweb.sse { SSEMessage }
 import time
 import freeflowuniverse.spiderlib.auth.tfconnect
 import net.smtp
+import net.http
 import crypto.rand as crypto_rand
 import os
 import freeflowuniverse.crystallib.publisher2 { Publisher, User, Email, Access }
@@ -133,58 +134,91 @@ fn get_access(token string, username string) ?Access {
 	return payload.access
 }
 
-// create authenticator and random cypher
-// config smtp client and sends mail with verification link
-fn send_verification_email(email string) Auth {
-	auth_code := crypto_rand.bytes(64) or { panic(err) }
-	authenticator := Auth { auth_code: auth_code }
+// email verification controller, initiates email verification,
+// sends verification link, and returns verify email page
+[post]
+pub fn (mut app App) email_verification(email string) vweb.Result {
+	
+	header := http.new_header_from_map({
+		http.CommonHeader.content_type: 'application/json',
+	})
+	data := {'email': email}
 
-	auth_hex := auth_code.hex()
-	expiry_unix := time.now().unix + 180
-	timeout := time.new_time(unix: expiry_unix)
+	// todo: add authorization header
+	request := http.Request{
+		url: "http://localhost:8002/email_verification"
+		method: http.Method.post
+		header: header,
+		data: json.encode(data)
+	}
+	response := request.do() or {
+		panic('Could not send verify email request to authorization server: $err')
+	}
+	println('resp: $response')
 
-	subject := 'Test Subject'
-	body := 'Test Body, <a href="localhost:8000/authenticate/$email/$auth_hex">Click to authenticate</a>'
-	client_cfg := smtp.Client {
-		server: 'smtp.mailtrap.io'
-		from: 'verify@tfpublisher.io'
-		port: 465
-		username: 'e57312ae7c9742'
-		password: 'b8dc875d4a0b33'
-	}
-	send_cfg := smtp.Mail{
-		to: email
-		subject: subject
-		body_type: .html
-		body: body
-	}
-	mut client := smtp.new_client(client_cfg) or { panic('Error creating smtp client: $err') }
-	client.send(send_cfg) or { panic('Error resolving email address') }
-	client.quit() or { panic('Could not close connection to server')}
-	$if debug {
-		eprintln(@FN + ':\nSent verification email to: $email')
-	}
-	return authenticator
+	return app.verify_email(email) // returns email verification view
 }
 
-// create login cookie and add user to publisher
+// triggered when email is verified
+// gets user from publisher api
+// creates / updates jwt cookie, redirects to callback
 [post]
-pub fn (mut app App) login_service(email string) vweb.Result {
+pub fn (mut app App) email_login(email string) vweb.Result {
 	email_obj := Email {
 		address: email
-		authenticated: false
+		authenticated: true
 	}
+
 	user := User { name: email, emails: [email_obj] }
-	// lock app.publisher{
-	// 	if app.publisher.users[email] == User{} {
-	// 		mut new_user := app.publisher.user_add(email)
-	// 		new_user.emails = [email_obj]
-	// 	}
-	// }
+	app.user = user
 	token := make_token(user)
 	app.set_cookie(name: 'token', value: token)
-	return app.ok('')
+
+	// // api post to get user
+	// header := http.new_header_from_map({
+	// 	http.CommonHeader.content_type: 'application/json',
+	// })
+
+	// request := http.Request{
+	// 	url: "http://localhost:8080/get_user"
+	// 	method: http.Method.post
+	// 	header: header,
+	// 	data: json.encode(user),
+	// }
+
+	// result := request.do()!
+	// user := json.decode(User, result.body) or {panic('cannot decode: $err')}
+	// access_token := app.get_access_token(user)
+	// app.set_cookie(name: 'access_token', value: access_token)
+	
+	
+	return app.html('/')
 }
+
+
+// // requests an access token for a user from the authorization server api
+// fn (mut app App) get_access_token(user User) !string {
+
+// 	header := http.new_header_from_map({
+// 		http.CommonHeader.content_type: 'application/json',
+// 	})
+// 	data := {
+// 		'name': user.name
+// 		'emails': user.emails
+// 	}
+
+// 	// todo: add authorization header
+// 	request := http.Request{
+// 		url: "http://localhost:8080/create_access_token"
+// 		method: http.Method.post
+// 		header: header,
+// 		data: json.encode(data),
+// 	}
+// 	access_token := request.do() or {
+// 		return error('Could not get access token from authorization server: $err')
+// 	}
+// 	return access_token
+// }
 
 // Updates authentication status by sending server sent event
 ["/auth_update/:email"]
@@ -199,16 +233,31 @@ pub fn (mut app App) auth_update(email string) vweb.Result {
 
 	// checks if email is authenticated every 2 seconds
 	// inspired from https://github.com/vlang/v/blob/master/examples/vweb/server_sent_events/server.v
+	// todo: implement email auth api with websockets
+	mut first := true
 	for {
-		lock app.authenticators{
-			if app.authenticators[email].authenticated {
-				data := '{"time": "$time.now().str()", "random_id": "$rand.ulid()"}'
-				//? for some reason htmx doesn't pick up first sse
-				msg := SSEMessage{event: 'email_authenticated', data: data}
-				session.send_message(msg) or { return app.server_error(501) }
-				session.send_message(msg) or { return app.server_error(501) }
-				app.authenticators[email].authenticated = false
-			}
+		header := http.new_header_from_map({
+			http.CommonHeader.content_type: 'application/json',
+		})
+		data := {'email': email}
+
+		// todo: add authorization header
+		request := http.Request{
+			url: "http://localhost:8002/is_authenticated"
+			method: http.Method.post
+			header: header,
+			data: json.encode(data)
+		}
+		response := request.do() or {
+			panic('Could not send verify email request to authorization server: $err')
+		}
+		if response.body == 'true' && first {
+			sse_data := '{"time": "$time.now().str()", "random_id": "$rand.ulid()"}'
+			//? for some reason htmx doesn't pick up first sse
+			msg := SSEMessage{event: 'email_authenticated', data: sse_data}
+			session.send_message(msg) or { return app.server_error(501) }
+			session.send_message(msg) or { return app.server_error(501) }
+			first = false
 		}
 		time.sleep(2 * time.second)
 	}

@@ -17,7 +17,6 @@ fn (mut server App) tfconnect_verify()! vweb.Result {
 	// keys := parse_keys(file_path[1])!
 	server_public_key 	:= '8gWG5JzSmBJU+4iGRJc4MCLSs1H3uLstVfwQoSJQWWg='
 	server_private_key 	:= 'D4MyV9b6Yu4/4+6fFiAke1DJBL0CHKdHC3yNJpXAfEo='
-	println(';here')
 
 	// tfconnect.verify(server_public_key, server_private_key)
 

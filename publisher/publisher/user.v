@@ -13,8 +13,8 @@ module publisher
 // }
 
 pub fn (user User) get_site(site Site) !Site {
-	user_access := site.get_access(user)
-	if user_access != Right.read && user_access != Right.write {
+	user_right := site.get_right(user)
+	if user_right != Right.read && user_right != Right.write {
 		return error('unauthorized')
 	}
 	if site.authentication.email_required && user.emails.len == 0 {

@@ -49,32 +49,33 @@ pub fn (mut app App) auth(requisite string) vweb.Result {
 	return $vweb.html()
 }
 
-// Root auth route, handles login, verification, and redirect
+// // Email verification page with sse listener
+// // redirects to callback when email is verified
+// ['/verify_email/:email']
+// pub fn (mut app App) verify_email(email string) vweb.Result {
+// 	verify_email := app.ui.verify_email_partial(email)
+// 	return app.html(verify_email.html())
+// }
+
+// email verification page, prompts user to verify email from link sent
+// displays remaining time and resend option
 ['/verify_email']
-pub fn (mut app App) verify_email() vweb.Result {
-	url := app.get_header('Referer')
-	mut route := url.split('//')[1].all_after_first('/')
-	mut satisfied := false
-	
-	verify_page := partials.VerifyEmail {
-		email: 'test'
+pub fn (mut app App) verify_email(email string) vweb.Result {
+	verify_email := partials.VerifyEmail {
+		email: email
 	}
-	return app.html(verify_page.html())
+	return app.html(verify_email.html())
 }
 
-// login page, asks for email, creates cookie with email
+// login page, asks for email, triggers email verification on form submit
 ['/login']
 pub fn (mut app App) login() vweb.Result {
-	url := app.get_header('Referer')
-	mut route := url.split('//')[1].all_after_first('/')
-
 	mut login_action := Action{
 		label: 'Continue'
 		route: '/verify_email'
 	}
 
 	tfconnect_url := tfconnect.get_login_url(app.get_header('Host'), '8gWG5JzSmBJU+4iGRJc4MCLSs1H3uLstVfwQoSJQWWg=')
-	println('here: $tfconnect_url')
 	login := Login{
 		heading: 'Sign in to publisher'
 		login: login_action
@@ -84,41 +85,22 @@ pub fn (mut app App) login() vweb.Result {
 	return app.html(login.render())
 }
 
-// TODO: address based request limits recognition to prevent brute
-// TODO: max allowed request per seccond to prevent dos
-// sends verification email, returns verify email page
-['/auth_verify']
-pub fn (mut app App) auth_verify() vweb.Result {
-	token := app.get_cookie('token') or { '' }
-	user := get_user(token) or { User{} }
-	email := user.emails[0].address
+// // TODO: address based request limits recognition to prevent brute
+// // TODO: max allowed request per seccond to prevent dos
+// // sends verification email, returns verify email page
+// ['/auth_verify']
+// pub fn (mut app App) auth_verify() vweb.Result {
+// 	token := app.get_cookie('token') or { '' }
+// 	user := get_user(token) or { User{} }
+// 	email := user.emails[0].address
 
-	new_auth := send_verification_email(email)
-	lock app.authenticators {
-		app.authenticators[email] = new_auth
-	}
+// 	new_auth := send_verification_email(email)
+// 	lock app.authenticators {
+// 		app.authenticators[email] = new_auth
+// 	}
 
-	return $vweb.html()
-}
-
-// route of email verification link, random cypher
-// authenticates if email/cypher combo correct in 3 tries & 3min
-['/authenticate/:email/:cypher'; get]
-pub fn (mut app App) authenticate(email string, cypher string) vweb.Result {
-	lock app.authenticators {
-		if cypher == app.authenticators[email].auth_code.hex() {
-			if app.authenticators[email].attempts < 3 {
-				$if debug {
-					eprintln(@FN + ':\nUser authenticated email: $email')
-				}
-			}
-			app.authenticators[email].authenticated = true
-		} else {
-			app.authenticators[email].attempts += 1
-		}
-	}
-	return app.text('')
-}
+// 	return $vweb.html()
+// }
 
 pub fn (mut app App) insert_auth_listener() vweb.Result {
 	email := app.user.emails[0]

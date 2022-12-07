@@ -4,6 +4,7 @@ import freeflowuniverse.crystallib.publisher2 { User }
 import freeflowuniverse.crystallib.pathlib
 import vweb
 import os
+import gx { Color }
 import freeflowuniverse.spiderlib.uikit.shell
 
 pub interface Component {
@@ -34,7 +35,16 @@ pub:
 	access_check Routekeeper
 }
 
+// struct Palette {
+// 	colors []Color
+// }
+
+// pub struct Theme {
+// 	palette Palette
+// }
+
 // pub struct UserInterface {
 // 	shell shell.Shell
 // 	pages []Page
+// 	theme Theme
 // }

@@ -21,15 +21,12 @@ pub fn (mut clinet ClientApp) login() vweb.Result {
 	mut server_public_key := ""
 	mut file_path := os.args_after(".")
 	if file_path.len <= 1{
-		println(':(')
 		clinet.abort(400, 'file_dose_not_exist')
 	}
 	file_path << "."
 	println(file_path)
 	keys := auth.parse_keys(file_path[1]) or {panic(err)}
 	// keys := auth.parse_keys('../keys.toml') or {panic(err)}
-	println('keys: $keys')
-	println('keys: ${keys.value("server")}')
 	if keys.value("server") == toml.null{
 		clinet.abort(400, 'file_dose_not_exist')
 	} else {

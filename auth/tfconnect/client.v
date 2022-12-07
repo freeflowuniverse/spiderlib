@@ -40,7 +40,6 @@ pub fn get_login_url(app_id string, server_public_key string) string {
         "redirecturl": "/callback",
         "publickey": base64.encode(server_curve_pk[..]),
     }
-	println('yoo: ${auth.url_encode(params)}')
 	return "$redirect_url?${auth.url_encode(params)}"
 }
 

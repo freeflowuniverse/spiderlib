@@ -14,7 +14,9 @@ const (
 
 
 pub fn (mut app App) before_request() {
-	println('ye')
+	$if debug {
+		eprintln('Incoming request to api: $app.req')
+	}
 }
 
 pub fn new_app() &App {
@@ -32,15 +34,6 @@ pub mut:
 	channel chan &FunctionCall [vweb_global]
 	response_channel chan &FunctionResponse [vweb_global]
 }
-
-// struct Auth {
-// 	max_attempts int = 3
-// mut:
-// 	timeout       Time
-// 	auth_code     []u8
-// 	attempts      int  = 0
-// 	authenticated bool = false
-// }
 
 pub fn run_api() {
 	mut app := new_app()

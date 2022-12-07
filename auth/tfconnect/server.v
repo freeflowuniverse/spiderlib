@@ -127,7 +127,6 @@ pub fn request_to_get_pub_key(username string)! http.Response{
 	}
 	url := "https://login.threefold.me/api/users/$username"
 	resp := http.fetch(http.FetchConfig{ ...config, url: url })!
-	println(resp)
 	return resp
 }
 

@@ -6,9 +6,9 @@
     <div class="hidden w-2/3 lg:flex">
         <img class="rounded-l-lg" src="../../static/threefold_sustainability.png" alt="login image">
     </div>
-    <div class="w-full p-6 space-y-8 sm:p-8 lg:p-16 lg:py-0" id="login-card" hx-sse="connect:/auth_update/@verify.email">
-        <span hx-trigger="sse:email_authenticated once" hx-post="/update_user_cookie" hx-vals='{"email": "@verify.email"}' swap="none"></span>
-        <span hx-trigger="sse:email_authenticated once" hx-get="/auth/auth_required" hx-target="body"></span>
+    <div class="w-full p-6 space-y-8 sm:p-8 lg:p-16 lg:py-0" id="login-card" hx-sse="connect:/auth_update/@verify.email" swap="none">
+        <span hx-trigger="sse:email_authenticated once" hx-post="/email_login" hx-vals='{"email": "@verify.email"}' swap="none"></span>
+        <span hx-trigger="sse:email_authenticated once" hx-get="/" hx-target="body"></span>
         <h2 class="text-2xl font-bold text-gray-900 lg:text-3xl dark:text-white">
             Verify your email
         </h2>

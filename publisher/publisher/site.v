@@ -30,14 +30,13 @@ fn (mut site Site) update_info() {
 	site.title = parsed.get_tag('title')[0].content
 	site.description = parsed.get_tag_by_attribute_value('name', 'description')[0].content
 	site.description = 'value nation wealth manufacturing which swim grabbed pick thee further dirt rock work pet hope selection call fun consist heart guard run bare jackage railroad drive number special out zoo fastened wide party divide card tax property beneath native shot line apart beat immediately lake stock dish'
-
 }
 
 pub fn (p Publisher) get_sites(user User) []Site {
 	mut accesible_sites := []Site{}
 	for name, site in p.sites {
-		user_access := p.get_access(p.users[user.name], name)
-		if user_access.right == Right.read || user_access.right == Right.write {
+		user_right := site.get_right(p.users[user.name])
+		if user_right == Right.read || user_right == Right.write {
 			accesible_sites << site
 		}
 	}
@@ -45,7 +44,8 @@ pub fn (p Publisher) get_sites(user User) []Site {
 }
 
 // returns the right a user has to a given site
-fn (site Site) get_access(user User) Right {
+// if a user can access, but requires email, considered to have reading right
+fn (site Site) get_right(user User) Right {
 	mut right := Right.block
 	auth := site.authentication
 	if auth.acl.len > 0 {
@@ -60,16 +60,7 @@ fn (site Site) get_access(user User) Right {
 				}
 			}
 		}
-	}
-	if auth.email_required {
-		if user.emails.len > 0 {
-			right = .read
-		}
-		if auth.email_authenticated {
-			if user.emails.any(it.authenticated) {
-				right = .read
-			}
-		}
-	}
+	// assumes read right if no acl
+	} else { right = Right.read }
 	return right
 }

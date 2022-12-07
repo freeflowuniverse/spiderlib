@@ -52,6 +52,7 @@ fn main() {
 
 		match call.function {
 			'get_site' { 
+				println('getting site')
 				payload := json.decode(map[string]string, call.payload)!
 				mut site := publisher.sites[payload['sitename']]
 				user := publisher.users[payload['username']]
@@ -60,7 +61,7 @@ fn main() {
 				}
 				if response == '' {
 					response = json.encode(site)
-				} 
+				}
 			}
 			'get_sites' { 
 				user := json.decode(User, call.payload)!
@@ -68,11 +69,11 @@ fn main() {
 				response = json.encode(sites)
 			}
 			else {}
-		} 
+		}
 		api.response_channel <- &apilib.FunctionResponse{
 			thread_id: call.thread_id
 			function: call.function
-			payload: json.encode(response)
+			payload: response
 		}
 	}
 }

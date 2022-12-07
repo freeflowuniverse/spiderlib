@@ -12,10 +12,8 @@ const (
 )
 
 pub fn (mut app App) before_request() {
-			println('yoo $app.req')
-
 	hx_request := app.get_header('Hx-Request') == 'true'
-	if !hx_request && app.req.url != '/' && app.req.url.ends_with('.html') && !app.req.url.starts_with('/sites/') && !app.req.url.starts_with('/testsite/') {
+	if !hx_request && app.req.url != '/' && app.req.url.ends_with('.html') && !app.req.url.starts_with('/sites/') {
 		app.redirect('')
 	}
 	// updates app user before each request
@@ -59,7 +57,6 @@ pub fn run_view() {
 }
 
 pub fn (mut app App) index() vweb.Result {
-		println('yoo2 $app.req')
 	mut route := 'dashboard'
 	if app.get_header('Hx-Request') != 'true' {
 		if app.req.url != '/' {
