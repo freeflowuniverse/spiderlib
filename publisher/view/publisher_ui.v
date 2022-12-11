@@ -8,7 +8,7 @@ import freeflowuniverse.crystallib.publisher2 { Publisher, User }
 import freeflowuniverse.crystallib.pathlib
 
 const (
-	port = 8001
+	port = 8000
 )
 
 pub fn (mut app App) before_request() {

@@ -21,7 +21,7 @@ pub fn (mut app App) get_sites() ![]Site {
 	}
 
 	request := http.Request{
-		url: "http://localhost:8080/get_sites"
+		url: "http://localhost:8001/get_sites"
 		method: http.Method.post
 		header: header,
 		data: json.encode(data),
@@ -49,7 +49,7 @@ fn (mut app App) get_site(sitename string) !Site {
 	}
 
 	request := http.Request{
-		url: "http://localhost:8080/get_site/$username/$sitename"
+		url: "http://localhost:8001/get_site/$username/$sitename"
 		method: http.Method.get
 		header: header,
 		data: json.encode(data),

@@ -9,7 +9,7 @@ import freeflowuniverse.spiderlib.api { FunctionCall, FunctionResponse }
 import freeflowuniverse.crystallib.pathlib
 
 const (
-	port = 8080
+	port = 8001
 )
 
 
