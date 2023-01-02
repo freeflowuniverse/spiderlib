@@ -9,7 +9,7 @@ import freeflowuniverse.crystallib.publisher2
 import freeflowuniverse.crystallib.pathlib
 
 const (
-	port = 8001
+	port = 8000
 )
 
 struct App {

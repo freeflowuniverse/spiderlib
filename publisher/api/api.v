@@ -10,7 +10,7 @@ import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.spiderlib.auth.jwt
 
 const (
-	port = 8080
+	port = 8001
 )
 
 pub fn (mut app App) before_request() {

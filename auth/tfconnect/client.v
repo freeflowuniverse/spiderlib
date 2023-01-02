@@ -36,6 +36,19 @@ pub:
 }
 
 // 
+pub fn url_encode(map_ map[string]string) string {
+	mut formated := ""
+
+	for k, v in map_ {
+		if formated != "" {
+			formated += "&" + k + "=" + v
+		} else {
+			formated = k + "=" + v
+		}
+	}
+	return formated
+}
+
 pub fn get_login_url(app_id string, server_public_key string) string {
 
 	server_pk_decoded_32 := [32]u8{}
@@ -52,7 +65,7 @@ pub fn get_login_url(app_id string, server_public_key string) string {
         "redirecturl": "/callback",
         "publickey": base64.encode(server_curve_pk[..]),
     }
-	return "$redirect_url?${tfconnect.url_encode(params)}"
+	return "$redirect_url?${url_encode(params)}"
 }
 
 pub fn callback(query map[string]string)! string {
