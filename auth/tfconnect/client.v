@@ -8,7 +8,7 @@ import libsodium
 import toml
 import os
 import net.http
-import freeflowuniverse.crystallib.auth
+import freeflowuniverse.spiderlib.auth.tfconnect
 
 
 
@@ -24,6 +24,18 @@ const (
 	sign_len = 64
 )
 
+struct LoginUrlArgs{
+	app_id string
+	server_public_key string
+}
+
+pub struct TFConnectResponse {
+pub:
+	email      string
+	identifier string
+}
+
+// 
 pub fn get_login_url(app_id string, server_public_key string) string {
 
 	server_pk_decoded_32 := [32]u8{}
@@ -40,7 +52,7 @@ pub fn get_login_url(app_id string, server_public_key string) string {
         "redirecturl": "/callback",
         "publickey": base64.encode(server_curve_pk[..]),
     }
-	return "$redirect_url?${auth.url_encode(params)}"
+	return "$redirect_url?${tfconnect.url_encode(params)}"
 }
 
 pub fn callback(query map[string]string)! string {
@@ -69,4 +81,17 @@ pub fn request_to_server_to_verify(data SignedAttempt)!http.Response{
 	}
 	result := request.do()!
 	return result
+}
+
+pub fn url_encode(map_ map[string]string) string {
+	mut formated := ""
+
+	for k, v in map_ {
+		if formated != "" {
+			formated += "&" + k + "=" + v
+		} else {
+			formated = k + "=" + v
+		}
+	}
+	return formated
 }

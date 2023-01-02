@@ -1,22 +1,30 @@
 module api
 
 import vweb
-import time { Time }
+import time
 import os
-import uikit.shell { Dashboard }
-import freeflowuniverse.spiderlib.publisher.publisher { Publisher, User }
+import uikit.shell
+import freeflowuniverse.spiderlib.publisher.publisher
 import freeflowuniverse.spiderlib.api { FunctionCall, FunctionResponse }
 import freeflowuniverse.crystallib.pathlib
+import freeflowuniverse.spiderlib.auth.jwt
 
 const (
 	port = 8080
 )
 
-
 pub fn (mut app App) before_request() {
 	$if debug {
 		eprintln('Incoming request to api: $app.req')
 	}
+	token := app.get_header('Authorization').trim_string_left('Bearer ')
+
+	// sets user from token
+	if jwt.verify_jwt(token) {
+		app.username = jwt.get_data(token) or { panic(err) }
+	}
+
+	println(app)
 }
 
 pub fn new_app() &App {
@@ -31,7 +39,8 @@ pub fn new_app() &App {
 pub struct App {
 	vweb.Context
 pub mut:
-	channel chan &FunctionCall [vweb_global]
+	username         string // user identifier
+	channel          chan &FunctionCall     [vweb_global]
 	response_channel chan &FunctionResponse [vweb_global]
 }
 

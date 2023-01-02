@@ -4,55 +4,56 @@ import vweb
 import os
 import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.spiderlib.publisher.publisher { Site }
-import freeflowuniverse.spiderlib.htmx { HTMX }
+import freeflowuniverse.spiderlib.htmx
 import time
 import net.html
 import json
 import net.http
 
 pub fn (mut app App) get_sites() ![]Site {
-
 	header := http.new_header_from_map({
-		http.CommonHeader.content_type: 'application/json',
+		http.CommonHeader.content_type: 'application/json'
 	})
 
 	data := {
-		'user': 'user.name'
+		'user': app.username
 	}
 
 	request := http.Request{
-		url: "http://localhost:8080/get_sites"
-		method: http.Method.post
-		header: header,
-		data: json.encode(data),
+		url: 'http://localhost:8080/get_sites'
+		method: http.Method.get
+		header: header
+		data: json.encode(data)
 	}
 	result := request.do()!
-	sites := json.decode([]Site, result.body) or {panic('nasss: $err')}
+	sites := json.decode([]Site, result.body) or {
+		return error('Failed to decode server response into sites: $err')
+	}
 	return sites
 }
 
-
-// getter function for site, return site with given name
+// get_site queries the publisher api for a site with given name
+// returns Site or error.
 fn (mut app App) get_site(sitename string) !Site {
 	header := http.new_header_from_map({
-		http.CommonHeader.content_type: 'application/json',
+		http.CommonHeader.content_type: 'application/json'
 	})
 
 	data := {
-		'username': app.user.name
+		'username': app.username
 		'sitename': sitename
 	}
 
-	mut username := app.user.name
+	mut username := app.username
 	if username == '' {
 		username = 'guest'
 	}
 
 	request := http.Request{
-		url: "http://localhost:8080/get_site/$username/$sitename"
+		url: 'http://localhost:8080/get_site/$sitename'
 		method: http.Method.get
-		header: header,
-		data: json.encode(data),
+		header: header
+		data: json.encode(data)
 	}
 
 	result := request.do()!
