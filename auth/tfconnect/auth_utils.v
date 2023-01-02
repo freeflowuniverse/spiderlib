@@ -22,7 +22,7 @@ pub fn (c CustomResponse) to_json() string {
     return json.encode(c)
 }
 
-fn (s SignedAttempt) load (data map[string]string)!SignedAttempt {
+pub fn (s SignedAttempt) load (data map[string]string)!SignedAttempt {
     data_ 			:= json2.raw_decode(data['signedAttempt'])!
 	signed_attempt 	:= data_.as_map()["signedAttempt"]!.str()
 	double_name 	:= data_.as_map()["doubleName"]!.str()

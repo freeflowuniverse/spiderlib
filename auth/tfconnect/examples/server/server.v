@@ -5,9 +5,6 @@ import encoding.base64
 import libsodium
 import os
 
-
-
-
 ["/verify"; post]
 fn (mut server ServerApp) verify()! vweb.Result {
 	mut file_path := os.args_after(".")

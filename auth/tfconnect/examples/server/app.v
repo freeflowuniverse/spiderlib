@@ -1,7 +1,7 @@
 module main
 import vweb
 import term
-import freeflowuniverse.crystallib.auth
+import freeflowuniverse.spiderlib.auth.tfconnect
 
 
 
@@ -16,6 +16,6 @@ fn main() {
 
 pub fn (mut server ServerApp)abort(status int, message string){
 	server.set_status(status, message)
-	er := auth.CustomResponse{status, message}
+	er := tfconnect.CustomResponse{status, message}
 	server.json(er.to_json())
 }
