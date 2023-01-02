@@ -2,24 +2,25 @@ module view
 
 import vweb
 import os
-import freeflowuniverse.crystallib.pathlib { Path }
-import freeflowuniverse.crystallib.publisher2 { Access, AccessLog, Site }
+import freeflowuniverse.crystallib.pathlib
+import freeflowuniverse.spiderlib.publisher.publisher { Access }
 import freeflowuniverse.spiderlib.uikit
 import time
 import net.html
+import freeflowuniverse.spiderlib.auth.jwt
 
-// Gets the access level a user has to a site
-pub fn (mut app App) site_get_access(name string) Access {
-	cookie := app.get_cookie(name) or { '' }
-	return get_access(cookie, app.user.name) or {
-		mut access := Access{}
-		// rlock app.publisher {
-		// 	access = app.publisher.get_access(app.user, name)
-		// }
-		// app.create_access_cookie(name, access)
-		return access
-	}
-}
+// // Gets the access level a user has to a site
+// pub fn (mut app App) site_get_access(name string) Access {
+// 	cookie := app.get_cookie(name) or { '' }
+// 	return jwt.get_access(cookie, app.username) or {
+// 		mut access := Access{}
+// 		// rlock app.publisher {
+// 		// 	access = app.publisher.get_access(app.user, name)
+// 		// }
+// 		// app.create_access_cookie(name, access)
+// 		return access
+// 	}
+// }
 
 // pub fn (mut app App) site_get(path string) vweb.Result {
 

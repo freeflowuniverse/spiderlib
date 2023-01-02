@@ -9,45 +9,45 @@ import v.ast
 import uikit.partials { Action, Login }
 import crypto.rand as crypto_rand
 import sqlite
-import freeflowuniverse.crystallib.publisher2 { User }
+import freeflowuniverse.crystallib.publisher2
 import freeflowuniverse.spiderlib.auth.tfconnect
 
-// Root auth route, handles login, verification, and redirect
-['/auth/:requisite']
-pub fn (mut app App) auth(requisite string) vweb.Result {
-	url := app.get_header('Referer')
-	mut route := url.split('//')[1].all_after_first('/')
-	mut satisfied := false
+// // Root auth route, handles login, verification, and redirect
+// ['/auth/:requisite']
+// pub fn (mut app App) auth(requisite string) vweb.Result {
+// 	url := app.get_header('Referer')
+// 	mut route := url.split('//')[1].all_after_first('/')
+// 	mut satisfied := false
 
-	if requisite == 'email_required' {
-		if app.user.emails.len == 0 {
-			route = '/auth_login'
-		} else {
-			satisfied = true
-		}
-	}
+// 	if requisite == 'email_required' {
+// 		if app.user.emails.len == 0 {
+// 			route = '/auth_login'
+// 		} else {
+// 			satisfied = true
+// 		}
+// 	}
 
-	if requisite == 'auth_required' {
-		if app.user.emails.any(!it.authenticated) {
-			route = '/auth_verify'
-		} else {
-			satisfied = true
-		}
-	}
+// 	if requisite == 'auth_required' {
+// 		if app.user.emails.any(!it.authenticated) {
+// 			route = '/auth_verify'
+// 		} else {
+// 			satisfied = true
+// 		}
+// 	}
 
-	// Redirect (via hx-location) to route if requisite satisfed
-	if satisfied {
-		target := app.get_header('Hx-Target')
-		if target != '' {
-			app.add_header('HX-Location', '{"path":"/$route", "target":"#$target"}')
-		} else {
-			app.add_header('HX-Location', '{"path":"/$route"}')
-		}
-		return app.ok('')
-	}
+// 	// Redirect (via hx-location) to route if requisite satisfed
+// 	if satisfied {
+// 		target := app.get_header('Hx-Target')
+// 		if target != '' {
+// 			app.add_header('HX-Location', '{"path":"/$route", "target":"#$target"}')
+// 		} else {
+// 			app.add_header('HX-Location', '{"path":"/$route"}')
+// 		}
+// 		return app.ok('')
+// 	}
 
-	return $vweb.html()
-}
+// 	return $vweb.html()
+// }
 
 // // Email verification page with sse listener
 // // redirects to callback when email is verified
@@ -61,7 +61,7 @@ pub fn (mut app App) auth(requisite string) vweb.Result {
 // displays remaining time and resend option
 ['/verify_email']
 pub fn (mut app App) verify_email(email string) vweb.Result {
-	verify_email := partials.VerifyEmail {
+	verify_email := partials.VerifyEmail{
 		email: email
 	}
 	return app.html(verify_email.html())
@@ -102,8 +102,11 @@ pub fn (mut app App) login() vweb.Result {
 // 	return $vweb.html()
 // }
 
+
 pub fn (mut app App) insert_auth_listener() vweb.Result {
-	email := app.user.emails[0]
+	// email := app.user.emails[0]
+	// todo
+	email := 'å'
 	return app.html('hx-sse="connect:/auth_update/$email"')
 }
 

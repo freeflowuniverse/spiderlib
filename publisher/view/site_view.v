@@ -4,7 +4,7 @@ import vweb
 import os
 import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.spiderlib.publisher.publisher { Site }
-import freeflowuniverse.spiderlib.htmx { HTMX }
+import freeflowuniverse.spiderlib.htmx
 import freeflowuniverse.spiderlib.uikit.partials { Card }
 import freeflowuniverse.spiderlib.uikit.pages { Cards }
 import freeflowuniverse.spiderlib.uikit.elements { LinkButton }
@@ -17,23 +17,25 @@ import net.http
 // gets and displays site cards for all accesible sites
 // returns the sites page in dashboard
 pub fn (mut app App) sites() vweb.Result {
-	sites := app.get_sites() or {panic(err)}
+	sites := app.get_sites() or { panic(err) }
 
 	// map sites to card partials
-	cards := sites.map( 
-		Card {
-			title: it.title
-			subtitle: '$it.sitetype'
-			description: it.description
-			footer: [LinkButton{
-					label: 'Open Site'
-					src: '/sites/$it.name/index.html'
-					target: '_blank'
-				}
-			]	
+	cards := sites.map(Card{
+		htmx: htmx.navigate('site/preview/$it.name')
+		title: it.title
+		subtitle: '$it.sitetype'
+		description: it.description
+		footer: [
+			LinkButton{
+				label: 'Open Site'
+				src: '/sites/$it.name/index.html'
+				target: '_blank'
+			},
+		]
 	})
+	println('card: $cards')
 
-	cards_page := Cards {
+	cards_page := Cards{
 		content: cards
 	}
 	return app.html(cards_page.html())
@@ -46,12 +48,16 @@ pub fn (mut app App) site_preview(sitename string) vweb.Result {
 	if app.get_header('Hx-Request') != 'true' {
 		return app.index()
 	}
-	mut site := Site{}
-	// rlock app.publisher {
-	// 	site = app.publisher.sites[sitename]
-	// }
+	mut site := app.get_site(sitename) or { panic('err') }
 
-	return $vweb.html()
+	preview_page := pages.PreviewPage{
+		title: site.title
+		description: site.description
+		owner: 'site.owner'
+		created_at: 'site.created_at'
+	}
+
+	return app.html(preview_page.html())
 }
 
 // gateway to viewing the site
@@ -59,34 +65,34 @@ pub fn (mut app App) site_preview(sitename string) vweb.Result {
 // otherwise redirects to auth views
 ['/site/view/:sitename']
 pub fn (mut app App) site_view(sitename string) vweb.Result {
-	
 	site := app.get_site(sitename) or {
 		if err.msg == 'email_required' {
 			return app.redirect('/login')
 		} else {
 			panic('error: $err')
-		} Site{}
+		}
+		Site{}
 	}
-	
-	app.mount_static_folder_at(os.resource_abs_path('testfolder') ,'/testurl')
+
+	app.mount_static_folder_at(os.resource_abs_path('testfolder'), '/testurl')
 
 	// return app.redirect('/sites/$sitename/index.html')
 	return app.redirect('/sites/$sitename/index.html')
 }
 
-
-
 // checks if user has right to access site
 // if so responds with site asset requests and injects logger htmx
 ['/sites/:path...']
 pub fn (mut app App) site(path string) vweb.Result {
-	
 	// TODO: os.read_file('mermaid.js.map') doesn't work
 	if path.ends_with('.map') {
 		return app.ok('')
 	}
 
-	mut response :=  os.read_file('sites/$path') or { println('fail: $path, $error') ''}
+	mut response := os.read_file('sites/$path') or {
+		println('fail: $path, $error')
+		''
+	}
 	app.set_content_type(app.req.header.get(.content_type) or { '' })
 
 	// injects htmx script to log access to site pages
@@ -130,7 +136,7 @@ pub fn (mut app App) site(path string) vweb.Result {
 // 			target: '_blank'
 // 		}
 // 	}
-	
+
 // 	mut share_dropdown := Dropdown{
 // 		label: 'Share'
 // 		options: [

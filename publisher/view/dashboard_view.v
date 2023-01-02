@@ -4,7 +4,7 @@ import vweb
 import freeflowuniverse.spiderlib.uikit.shell { Dashboard }
 import freeflowuniverse.spiderlib.uikit.partials { DashboardNavbar, DashboardSidebar }
 import freeflowuniverse.spiderlib.uikit.elements { IconButton }
-import freeflowuniverse.spiderlib.htmx { HTMX }
+import freeflowuniverse.spiderlib.htmx
 
 // router to catch and redirect dashboard routes
 ['/dashboard/:route...']
@@ -14,10 +14,9 @@ pub fn (mut app App) dashboard_(route string) vweb.Result {
 
 // returns dashboard with child page according to route
 pub fn (mut app App) dashboard() vweb.Result {
-
-	navbar := DashboardNavbar {
+	navbar := DashboardNavbar{
 		logo_path: '#'
-		username: app.user.name
+		username: app.username
 	}
 
 	sidebar := DashboardSidebar{
@@ -31,7 +30,7 @@ pub fn (mut app App) dashboard() vweb.Result {
 				label: 'Sites'
 				icon: '#'
 				hx: htmx.navigate('/sites')
-			}
+			},
 		]
 	}
 
