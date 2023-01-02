@@ -1,8 +1,10 @@
 module partials
 
+import freeflowuniverse.spiderlib.html
 import freeflowuniverse.spiderlib.uikit.elements
 
 pub struct Card {
+	html.HTML
 	pub:
 	title       string
 	subtitle    string
