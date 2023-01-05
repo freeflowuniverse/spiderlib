@@ -77,11 +77,11 @@ pub fn (mut p Publisher) auth_add(email_req bool, email_auth bool) &Authenticati
 pub struct Site {
 pub:
 	name      string // correspond to key, uses namefix from texttoolsmap[string]Page
-	publisher &Publisher [str: skip; skip]// pointer to sites
+	publisher &Publisher [skip; str: skip] // pointer to sites
 	sitetype  SiteType
 pub mut:
-	title string
-	description string
+	title          string
+	description    string
 	path           Path // path where site can be found
 	authentication Authentication
 	logs           []AccessLog = []
@@ -289,10 +289,10 @@ pub fn (p Publisher) get_right(username string, sitename string) Right {
 [heap]
 pub struct Authentication {
 pub mut:
-	email_required      bool   // if true means users need to give their email address (just a form)
-	email_authenticated bool   // if true, means user needs to give email address and verify the correctness with email client
-	tfconnect           bool   // not used now for future
-	kyc                 bool   // not used now for future (KYC/AML)
+	email_required      bool  // if true means users need to give their email address (just a form)
+	email_authenticated bool  // if true, means user needs to give email address and verify the correctness with email client
+	tfconnect           bool  // not used now for future
+	kyc                 bool  // not used now for future (KYC/AML)
 	acl                 []ACL // list of people who have access, can be empty if empty there can be passwd
 }
 
@@ -319,23 +319,6 @@ pub:
 	name string
 pub mut:
 	users []User
-}
-
-[heap]
-pub struct User {
-pub:
-	name string
-pub mut:
-	tfconnect string // tfconnect identifier
-	emails  []Email
-	pubkeys []string // optional
-	sshkeys []string // optional
-}
-
-pub struct Email {
-pub mut:
-	address       string
-	authenticated bool
 }
 
 // we just go for these 2 for now

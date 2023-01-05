@@ -1,6 +1,6 @@
 module publisher
 
-import freeflowuniverse.crystallib.pathlib { Path }
+import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.crystallib.texttools
 import net.html
 import os
@@ -32,10 +32,11 @@ fn (mut site Site) update_info() {
 	site.description = 'value nation wealth manufacturing which swim grabbed pick thee further dirt rock work pet hope selection call fun consist heart guard run bare jackage railroad drive number special out zoo fastened wide party divide card tax property beneath native shot line apart beat immediately lake stock dish'
 }
 
-pub fn (p Publisher) get_sites(user User) []Site {
+// get sites returns a list of sites that a username has access to
+pub fn (p Publisher) get_sites(username string) []Site {
 	mut accesible_sites := []Site{}
 	for name, site in p.sites {
-		user_right := site.get_right(p.users[user.name])
+		user_right := site.get_right(p.users[username])
 		if user_right == Right.read || user_right == Right.write {
 			accesible_sites << site
 		}
@@ -60,7 +61,9 @@ fn (site Site) get_right(user User) Right {
 				}
 			}
 		}
-	// assumes read right if no acl
-	} else { right = Right.read }
+		// assumes read right if no acl
+	} else {
+		right = Right.read
+	}
 	return right
 }

@@ -1,9 +1,25 @@
 module publisher
 
+import freeflowuniverse.spiderlib.user
+
+[heap]
+pub struct User {
+	user.User
+pub:
+	sites_user   map[string]Site // sites that a user owns
+	sites_shared []SiteAddress   // addresses of sites shared with user
+}
+
+pub struct SiteAddress {
+	owner    string
+	sitename string
+}
+
 // // returns the sites that the user has read or write access to
 // pub fn (user User) get_sites() []Site {
-// 	mut accesible_sites := []Site{}
-// 	for name, site in p.sites {
+// 	mut sites := user.sites.values()
+// 	for site_addr in user.sites_shared {
+// 		owner.get_site
 // 		user_access := p.get_access(p.users[user.name], name)
 // 		if user_access.right == Right.read || user_access.right == Right.write {
 // 			accesible_sites << site

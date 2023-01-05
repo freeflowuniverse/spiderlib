@@ -2,20 +2,17 @@ module main
 
 import freeflowuniverse.spiderlib.publisher.api as publisher_api
 import freeflowuniverse.spiderlib.publisher.view { run_view }
-import freeflowuniverse.spiderlib.publisher.publisher { User, Site }
+import freeflowuniverse.spiderlib.publisher.publisher { Site, User }
 import freeflowuniverse.spiderlib.api as apilib
-
 import vweb
-import time { Time }
+import time
 import os
 import x.json2
 import json
-import sync
-import freeflowuniverse.spiderlib.uikit.shell { Dashboard }
+import freeflowuniverse.spiderlib.uikit.shell
 import freeflowuniverse.crystallib.pathlib
 
 fn main() {
-
 	mut publisher := publisher.get() or { panic(err) }
 
 	user_timur := publisher.user_add('timur@threefold.io')
@@ -39,33 +36,33 @@ fn main() {
 
 	mut api := publisher_api.new_app()
 
-	go publisher_api.run(api)
-	go run_view()
+	spawn publisher_api.run(api)
+	spawn run_view()
 
 	for {
 		call := <-api.channel
 
 		mut sites := []Site{}
 
-
 		mut response := ''
 
 		match call.function {
-			'get_site' { 
+			'get_site' {
 				println('getting site')
 				payload := json.decode(map[string]string, call.payload)!
 				mut site := publisher.sites[payload['sitename']]
 				user := publisher.users[payload['username']]
 				site = user.get_site(site) or {
-					response = err.msg Site{}
+					response = err.msg
+					Site{}
 				}
 				if response == '' {
 					response = json.encode(site)
 				}
 			}
-			'get_sites' { 
-				user := json.decode(User, call.payload)!
-				sites = publisher.get_sites(user) 
+			'get_sites' {
+				user := call.payload
+				sites = publisher.get_sites(user)
 				response = json.encode(sites)
 			}
 			else {}
@@ -87,9 +84,9 @@ fn main() {
 // }
 
 fn init_publisher() {
-	
 }
-		struct GetSitePayload {
-			user User
-			sitename string
-		}
+
+struct GetSitePayload {
+	user     User
+	sitename string
+}
