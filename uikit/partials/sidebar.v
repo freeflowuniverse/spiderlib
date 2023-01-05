@@ -13,7 +13,7 @@ pub type Menu = []MenuItem
 // 	bottom_menu Menu
 // }
 
-type Sidebar = DashboardSidebar
+pub type Sidebar = DashboardSidebar
 
 
 // sidebar

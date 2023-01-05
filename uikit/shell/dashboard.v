@@ -23,3 +23,13 @@ pub fn (dashboard Dashboard) render() string {
 	current_url:= '/home'
 	return $tmpl('templates/dashboard.html')
 }
+
+pub struct AppShell {
+	pub:
+	navbar partials.Navbar
+	sidebar partials.Sidebar
+}
+
+pub fn (shell AppShell) html() string {
+	return $tmpl('templates/shell.html')
+}

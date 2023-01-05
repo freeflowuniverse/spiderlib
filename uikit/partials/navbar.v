@@ -3,7 +3,7 @@ module partials
 import freeflowuniverse.spiderlib.htmx { HTMX}
 import freeflowuniverse.spiderlib.uikit.elements { Button}
 
-type Navbar = DashboardNavbar
+pub type Navbar = DashboardNavbar
 
 // pub struct Navbar {
 // pub mut:

@@ -1,10 +1,26 @@
 module pages
 
 import freeflowuniverse.spiderlib.uikit.partials { Card }
+import freeflowuniverse.spiderlib.uikit.elements {Button}
+
 type Main = BlankPage
 
 pub struct Page {
 
+}
+
+pub struct Home {
+	Page
+pub:
+	title string
+	description string
+	background string
+	hero_button Button
+}
+
+pub fn (home Home) html() string {
+	return $tmpl('templates/home.html')
+	// return '<main>$blank.content</main>'
 }
 
 pub struct PreviewPage {
