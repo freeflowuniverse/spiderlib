@@ -8,13 +8,6 @@ struct PaymentCLI {
 	resp chan FunctionResponse
 }
 
-fn new_cli(call chan FunctionCall, resp chan FunctionResponse) {
-	return PaymentCLI{
-		call: call
-		resp: resp
-	}
-}
-
 fn (cli PaymentCLI) run() {
 	for {
 		command := os.input('>')

@@ -4,8 +4,8 @@ import time
 import x.json2
 import json
 
-struct Event {
-mut:
+pub struct Event {
+pub mut:
 	id          string
 	object      string
 	api_version string
@@ -15,7 +15,7 @@ mut:
 }
 
 struct EventData {
-mut:
+pub mut:
 	object StripeObject
 }
 
@@ -23,7 +23,7 @@ type StripeObject = Event | Session
 
 // replacement for json decode
 // json decode returns unknown sum type value
-fn (client StripeClient) decode_event(event_str string) !Event {
+pub fn (client StripeClient) decode_event(event_str string) !Event {
 	raw_event := json2.raw_decode(event_str) or { panic(err) }
 	event_map := raw_event.as_map()
 	event_type := event_map['type'] as string

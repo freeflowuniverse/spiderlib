@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <script type = "text/javascript" src = "index.js"></script>
+        <script>
+
+
+        </script>
+    </head>
+    <body style="width: 400px">
+        <h1>Purchase Mastadon Server</h1>
+        <form style="display: flex; flex-direction: column;" action="/mastadon_checkout">
+            <div>
+                <label for="twindid">Enter your twin id</label>
+                <input type="text" name="twinid" id="twinid">
+            </div>
+            <label for="twindid">How many months of mastadon server would you like to purchase?</label>
+            <input type="range" min="1" max="12" value="6" id="months">
+            <button>Checkout</button>
+        </form>
+    </body>
+</html>

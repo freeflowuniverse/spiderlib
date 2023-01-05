@@ -1,11 +1,12 @@
 module main
 
 import vweb
+import json
 import freeflowuniverse.crystallib.threefold.twinclient { TwinClient }
-import freeflowuniverse.spiderlib.payments.stripeclient { StripeClient }
+import freeflowuniverse.spiderlib.payments.stripeclient { StripeClient, Session }
 import freeflowuniverse.spiderlib.api { FunctionCall, FunctionResponse }
 
-struct Server {
+struct PaymentAPI {
 	vweb.Context
 	twinclient TwinClient
 	stripeclient StripeClient
@@ -14,38 +15,43 @@ struct Server {
 	resp_channel chan FunctionResponse [vweb_global]
 }
 
+pub fn (mut api PaymentAPI) before_request() {
+	println(api.req)
+}
+
 // stripe webhook endpoint listens to events from stripe, authenticates,
 // and passes events to PaymentApi over channel for handling
 [post]
-pub fn (mut server Server) stripe_webhook() vweb.Result {
+pub fn (mut api PaymentAPI) stripe_webhook() vweb.Result {
 	$if debug {
-		println('Incoming webhook data: $server.req.data')
+		println('Incoming webhook data: $api.req.data')
 	}
 
-	// event := server.stripeclient.decode_event(server.req.data) or {
+	// event := api.stripeclient.decode_event(api.req.data) or {
 	// 	eprintln('Failed to decode event: $err')
-	// 	return server.server_error(500)
+	// 	return api.server_error(500)
 	// }
 
 	function_call := FunctionCall {
 		function: 'handle_event'
-		payload: app.req.data
+		payload: api.req.data
 	}
 
 	// pass event and return quick 200 response
-	server.call_channel <- function_call
-	return server.html('ok') 
+	api.call_channel <- function_call
+	return api.html('ok') 
 }
 
-// create payment url receives the number of months of mastadon server to be purchased
+// create payment url receives the number of months of mastadon api to be purchased
 // returns session url to be redirected for stripe payment
-pub fn (mut server Server) create_mastadon_session() vweb.Result {
+[POST]
+pub fn (mut api PaymentAPI) create_mastadon_session() vweb.Result {
 	function_call := FunctionCall {
 		function: 'create_mastadon_session'
-		payload: server.req.data
+		payload: api.req.data
 	}
-	app.call_channel <- function_call
-	response := <- app.resp_channel
-	session := json.decode(CheckoutSession, response.payload)
-	return app.text(session.url)
+	api.call_channel <- function_call
+	response := <- api.resp_channel
+	session := json.decode(Session, response.payload) or {panic(err)}
+	return api.text(session.url)
 }

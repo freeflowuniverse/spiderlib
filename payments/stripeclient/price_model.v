@@ -4,7 +4,8 @@ import time
 
 type RecurringOptional = Recurring | int
 
-struct Price {
+pub struct Price {
+	pub:
 	id                 string
 	object             string = 'price'
 	active             bool   = true

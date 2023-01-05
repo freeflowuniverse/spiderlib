@@ -2,7 +2,7 @@ module stripeclient
 
 import time
 
-struct Session {
+pub struct Session {
 	pub:
 	id                         string
 	object                     string = 'checkout.session'
@@ -80,8 +80,9 @@ enum PaymentMethodType {
 	card
 }
 
-enum PaymentStatus {
+pub enum PaymentStatus {
 	unpaid
+	paid
 }
 
 struct PhoneNumberCollection {
@@ -106,10 +107,12 @@ pub struct SessionArgs {
 }
 
 pub struct LineItem {
+	pub:
 	price string
 	// price_data          PriceArgs
 	quantity            int
 	adjustable_quantity map[string]string
 	dynamic_tax_rates   string
 	tax_rates           string
+	product string
 }

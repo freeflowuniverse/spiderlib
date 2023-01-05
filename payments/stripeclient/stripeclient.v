@@ -34,14 +34,13 @@ fn (client StripeClient) post_request(endpoint string, data_ string) !string {
 }
 
 // returns json encoded string response body
-fn (client StripeClient) get_request(endpoint string, data string) !string {
+fn (client StripeClient) get_request(endpoint string) !string {
 	// creates request, adds auth and content type header
-	url := 'https://api.stripe.com/v1/${endpoint}${data}'
+	url := 'https://api.stripe.com/v1/${endpoint}'
 	mut request := http.new_request(Method.get, url, '') or {
 		panic('Failed to create http request')
 	}
 	request.add_header(http.CommonHeader.authorization, 'Basic ${client.sk_test}')
-	request.add_header(http.CommonHeader.content_type, 'application/x-www-form-urlencoded')
 
 	response := request.do()!
 	// returns error if receives error response

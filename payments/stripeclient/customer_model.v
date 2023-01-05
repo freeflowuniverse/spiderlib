@@ -2,7 +2,8 @@ module stripeclient
 
 import time
 
-struct Customer {
+pub struct Customer {
+	pub:
 	id                    string
 	object                string
 	address               string

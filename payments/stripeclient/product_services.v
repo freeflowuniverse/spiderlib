@@ -11,6 +11,6 @@ pub fn (client StripeClient) create_product(args ProductArgs) !Product {
 }
 
 pub fn (client StripeClient) retrieve_product(product_id string) !Product {
-	response := client.get_request('products', product_id)!
+	response := client.get_request('products/$product_id')!
 	return json.decode(Product, response)
 }
