@@ -4,13 +4,13 @@ import json
 import net.http
 import time
 
-struct Asset {
+pub struct Asset {
 	code string
 	issuer string
 	asset_type AssetType
 }
 
-enum AssetType {
+pub enum AssetType {
 	credit_alphanum4
 }
 
@@ -43,16 +43,19 @@ pub fn get_trade_aggregation(base_asset Asset, counter_asset Asset, period i64) 
 	return json.decode(TradeAggregation, result.body)
 }
 
-struct TradeAggregation {
+pub struct TradeAggregation {
+	pub:
 	links map[string]map[string]string [json: _links]
   	embedded Embedded [json: _embedded]
 }
 
-struct Embedded {
+pub struct Embedded {
+	pub:
 	records []AggregationRecord
 }
 
-struct AggregationRecord {
+pub struct AggregationRecord {
+	pub:
     timestamp string
     trade_count string
     base_volume string
@@ -68,7 +71,7 @@ struct AggregationRecord {
     close_r TradeRecord
 }
 
-struct TradeRecord {
+pub struct TradeRecord {
 	n string
 	d string
 }
