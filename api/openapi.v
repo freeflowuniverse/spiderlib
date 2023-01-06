@@ -6,7 +6,6 @@ enum OpenAPIVersion {
 	v3
 }
 
-
 struct OpenAPI {
 	pub:
 	version OpenAPIVersion
@@ -51,7 +50,7 @@ struct OpenAPIPath {
 struct OpenAPIArgs {
 	title string
 	description string
-	apipath string
+	apipath string [required]
 }
 
 pub fn new(args OpenAPIArgs) OpenAPI {

@@ -1,4 +1,4 @@
-# api
+# apilib
 
 V API module for vlang projects.
 
