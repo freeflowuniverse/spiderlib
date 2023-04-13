@@ -1,0 +1,3 @@
+module ssg
+
+// fn gen

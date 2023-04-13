@@ -4,10 +4,17 @@ import freeflowuniverse.spiderlib.htmx { HTMX }
 
 // pub type Button = IconButton | RoundedButton | LinkButton
 
-pub interface Button {
+pub struct Button {
+	pub:
 	hx HTMX
 	label string
-	html() string
+	icon string
+}
+
+pub interface IButton {
+	hx HTMX
+	label string
+	icon string
 }
 
 // button with icon

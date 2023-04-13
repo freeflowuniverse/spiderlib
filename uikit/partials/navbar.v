@@ -3,13 +3,23 @@ module partials
 import freeflowuniverse.spiderlib.htmx { HTMX}
 import freeflowuniverse.spiderlib.uikit.elements { Button}
 
-pub type Navbar = DashboardNavbar
 
 // pub struct Navbar {
 // pub mut:
 // 	logo_path string
 // 	username  string
 // }
+
+pub struct Navbar {
+	menu []elements.IButton
+	logo string
+}
+
+pub interface INavbar {
+		menu []elements.IButton
+		logo string
+	
+}
 
 pub struct DashboardNavbar {
 pub mut:

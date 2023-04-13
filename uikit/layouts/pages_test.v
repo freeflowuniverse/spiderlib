@@ -1,4 +1,4 @@
-module pages
+module layouts
 
 fn test_home() {
 	home_page := Home {

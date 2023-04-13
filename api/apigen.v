@@ -2,7 +2,6 @@ module api
 
 import v.ast
 import v.parser
-import v.fmt
 import v.pref
 
 const (

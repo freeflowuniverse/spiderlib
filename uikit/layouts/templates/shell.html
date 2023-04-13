@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css" />
+        <script src="/static/htmx.min.js"></script>
+
+    </head>
+
+    <div>
+        @for item in shell.navbar.menu
+            <button @{item.hx.stringify()}>@item.label</button>
+        @end
+    </div>
+
+
+    <body id="shell-content">
+
+    </body>
+</html>

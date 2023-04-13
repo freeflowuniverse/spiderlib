@@ -7,6 +7,6 @@ pub fn navigate(route string) HTMX {
 	return HTMX{
 		get: route
 		push_url: 'true'
-		target: '#dashboard-container'
+		target: '#outlet'
 	}
 }

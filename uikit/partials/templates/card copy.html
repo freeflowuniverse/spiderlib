@@ -14,6 +14,10 @@
 
           
         </div>
-
+        <div class="flex-shrink-0">
+            @for button in card.footer
+                @button.html()
+            @end
+        </div>
         </div>
     </div>

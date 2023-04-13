@@ -25,7 +25,7 @@ pub fn (hx HTMX) stringify() string {
 	mut repr := ''
 	for line in attributes[1..].filter(it.split(': ')[1] != "''") {
 		key := line.split(': ')[0].trim_left(' ')
-		val := line.split(': ')[1]
+		val := line.split(': ')[1].trim_left("'").trim_right("'")
 		repr += 'hx-${key.replace('_', '-')}=$val '
 	}
 	return repr

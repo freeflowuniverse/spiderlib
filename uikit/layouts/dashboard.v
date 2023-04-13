@@ -1,4 +1,4 @@
-module shell
+module layouts
 
 import vweb
 import freeflowuniverse.spiderlib.uikit.partials
@@ -10,8 +10,8 @@ struct App {
 pub struct Dashboard {
 pub mut:
 	logo_path string
-	navbar partials.Navbar
-	sidebar partials.Sidebar
+	navbar partials.DashboardNavbar
+	sidebar partials.DashboardSidebar
 	footer string
 	default_content string
 	template string = "./dashboard.html"
@@ -24,12 +24,6 @@ pub fn (dashboard Dashboard) render() string {
 	return $tmpl('templates/dashboard.html')
 }
 
-pub struct AppShell {
-	pub:
-	navbar partials.Navbar
-	sidebar partials.Sidebar
-}
-
-pub fn (shell AppShell) html() string {
-	return $tmpl('templates/shell.html')
-}
+// pub fn (shell AppShell) html() string {
+// 	return $tmpl('templates/shell.html')
+// }

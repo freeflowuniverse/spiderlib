@@ -8,6 +8,8 @@ import net.urllib { URL }
 type Source = Path | URL
 
 struct Element {
+	pub:
+	hx HTMX
 	content string
 }
 
@@ -42,7 +44,11 @@ struct Heading {
 
 }
 
-struct Button {
+pub interface IElement {
+	hx HTMX
+}
+
+pub struct Button {
 	inner string
 }
 
@@ -67,6 +73,7 @@ struct Table {
 }
 
 struct Div {
+	Element
 
 }
 

@@ -1,4 +1,4 @@
-module pages
+module layouts
 
 pub struct Kanban {
 	pub mut:
