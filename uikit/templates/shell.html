@@ -1,0 +1,15 @@
+<body>
+    <header style="width: full;">
+        <img src="/logo.png" alt="Logo"> <!-- Site Logo -->
+        @include 'templates/components/navbar.html'
+    </header>
+    @include 'templates/components/sidebar.html'
+    <div
+    @if app.req.url != "/"
+        hx-get="@app.req.url"
+    @else
+        hx-get="@shell.homepage"
+    @end
+        hx-trigger="load">
+    </div>
+</body>

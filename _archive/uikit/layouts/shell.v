@@ -2,7 +2,6 @@ module layouts
 
 import freeflowuniverse.spiderlib.uikit.partials
 
-
 pub struct AppShell {
 	pub:
 	navbar partials.Navbar
