@@ -6,6 +6,49 @@ import x.json2
 import encoding.base64
 import libsodium
 import net.http
+import rand
+
+pub fn (tfconnect TFConnect) create_login_url() string {
+	server_curve_pk := []u8{len: 32}
+	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(server_curve_pk.data, &tfconnect.pk_decoded[0])
+	state := rand.uuid_v4().replace('-', '')
+	params := {
+		'state':       state
+		'appid':       tfconnect.app_id
+		'scope':       json.encode({
+			'user':  true
+			'email': true
+		})
+		'redirecturl': '/auth/callback'
+		'publickey':   base64.encode(server_curve_pk[..])
+	}
+	return '${redirect_url}?${url_encode(params)}'
+}
+
+fn url_encode(map_ map[string]string) string {
+	mut formated := ''
+
+	for k, v in map_ {
+		if formated != '' {
+			formated += '&' + k + '=' + v
+		} else {
+			formated = k + '=' + v
+		}
+	}
+	return formated
+}
+
+pub fn load_signed_attempt(data map[string]string) !SignedAttempt {
+	if data == {} {
+		return error('400, signed_attempt_missing')
+	}
+
+	data_ := json2.raw_decode(data['signedAttempt'])!
+	signed_attempt := data_.as_map()['signedAttempt']!.str()
+	double_name := data_.as_map()['doubleName']!.str()
+	initial_data := SignedAttempt{signed_attempt, double_name}
+	return initial_data
+}
 
 	// mut file_path := os.args_after('.')
 	// if file_path.len <= 1 {
@@ -22,21 +65,21 @@ import net.http
 	// 	double_name: request_data.as_map()['double_name']!.str()
 	// }
 
-fn (mut app TFConnect) service_verify(data SignedAttempt) !vweb.Result {
+pub fn (mut app TFConnect) verify(data SignedAttempt) !string {
 	
 	if data.double_name == '' {
-		app.abort(400, no_double_name)
+		return TFConnectError {msg: no_double_name}
 	}
 
 	res := request_to_get_pub_key(data.double_name)!
 	if res.status_code != 200 {
-		app.abort(400, 'Error getting user pub key')
+		return error('Error getting user pub key')
 	}
 
 	body := json2.raw_decode(res.body)!
 	user_pk := body.as_map()['publicKey']!.str()
 	user_pk_buff := [32]u8{}
-	_ := base64.decode_in_buffer(&user_pk, &user_pk_buff.data)
+	_ := base64.decode_in_buffer(&user_pk, &user_pk_buff[0])
 	signed_data := data.signed_attempt
 
 	// This is just workaround becouse we need to access pub key inside verify key and we can not do it while this struct is private.
@@ -45,7 +88,7 @@ fn (mut app TFConnect) service_verify(data SignedAttempt) !vweb.Result {
 	verifed := verify_key.verify(base64.decode(signed_data))
 
 	if verifed == false {
-		app.abort(400, data_verfication_field)
+		return TFConnectError {msg: data_verfication_field}
 	}
 
 	verified_data := base64.decode(signed_data)
@@ -55,15 +98,15 @@ fn (mut app TFConnect) service_verify(data SignedAttempt) !vweb.Result {
 	res_data_struct := ResultData{data_obj.as_map()['doubleName']!.str(), data_obj.as_map()['signedState']!.str(), data_.as_map()['nonce']!.str(), data_.as_map()['ciphertext']!.str()}
 
 	if res_data_struct.double_name == '' {
-		app.abort(400, not_contain_doublename)
+		return TFConnectError {msg: not_contain_doublename}
 	}
 
 	if res_data_struct.state == '' {
-		app.abort(400, not_contain_state)
+		return TFConnectError {msg: not_contain_state}
 	}
 
 	if res_data_struct.double_name != data.double_name {
-		app.abort(400, username_mismatch)
+		return TFConnectError {msg: username_mismatch}
 	}
 
 	nonce := base64.decode(res_data_struct.nonce)
@@ -76,7 +119,7 @@ fn (mut app TFConnect) service_verify(data SignedAttempt) !vweb.Result {
 	server_curve_sk := []u8{len: 32}
 	server_curve_pk := []u8{len: 32}
 
-	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(user_curve_pk.data, &user_pk_buff)
+	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(user_curve_pk.data, &user_pk_buff[0])
 	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(server_curve_pk.data, &app.pk_decoded[0])
 	_ := libsodium.crypto_sign_ed25519_sk_to_curve25519(server_curve_sk.data, &app.sk_decoded[0])
 
@@ -96,31 +139,17 @@ fn (mut app TFConnect) service_verify(data SignedAttempt) !vweb.Result {
 	response := json2.raw_decode(response_email.as_map()['email']!.str())!
 
 	if response.as_map()['email']!.str() == '' {
-		app.abort(400, data_decrypting_error)
+		return TFConnectError {msg: data_decrypting_error}
 	}
 
 	sei := response.as_map()['sei']!
 	verify_sei := request_to_verify_sei(sei.str())!
 
 	if verify_sei.status_code != 200 {
-		app.abort(400, email_not_verified)
+		return TFConnectError {msg: email_not_verified}
 	}
 
-	return app.text('${verify_sei.body}')
-}
-
-fn (mut server ServerApp) abort(status int, message string) {
-	server.set_status(status, message)
-	er := CustomResponse{status, message}
-	server.json(er.to_json())
-}
-
-
-struct ResultData {
-	double_name string
-	state       string
-	nonce       string
-	ciphertext  string
+	return '${verify_sei.body}'
 }
 
 fn request_to_get_pub_key(username string) !http.Response {
@@ -153,4 +182,3 @@ fn request_to_verify_sei(sei string) !http.Response {
 	result := request.do()!
 	return result
 }
-
