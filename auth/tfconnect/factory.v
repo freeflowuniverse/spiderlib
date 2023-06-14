@@ -6,10 +6,10 @@ import toml
 [params]
 pub struct TFConnectConfig {
 pub:
-	app_id string
+	app_id string [required]
 	redirect_url string = 'https://login.threefold.me'
-	public_key string [required]
-	private_key string [required]
+	callback string
+	keypair ?Keypair
 }
 
 	// mut server_public_key := ''
@@ -26,18 +26,16 @@ pub:
 	// }
 
 pub fn new(config TFConnectConfig) !TFConnect {
-	// todo: more checking if pk is valid
-	if config.public_key == '' || config.private_key == '' {
-		return error('Public and private key must be provided.')
-	}
+
+	keypair := config.keypair or { create_keypair() }
 
 	pk_decoded_32 := []u8{len: 32}
 	sk_decoded_64 := []u8{len: 64}
 	// pk_decoded_32 := [32]u8{}
 	// sk_decoded_64 := [64]u8{}
 
-	// _ := base64.decode_in_buffer(&config.public_key, pk_decoded_32.data)
-	// _ := base64.decode_in_buffer(&config.private_key, sk_decoded_64.data)
+	_ := base64.decode_in_buffer(&keypair.public_key, pk_decoded_32.data)
+	_ := base64.decode_in_buffer(&keypair.private_key, sk_decoded_64.data)
 
 	// _ := base64.decode_in_buffer(&config.server_public_key, &server_pk_decoded_32)
 	// _ := libsodium.crypto_sign_ed25519_pk_to_curve25519(server_curve_pk.data, &server_pk_decoded_32[0])
@@ -45,8 +43,9 @@ pub fn new(config TFConnectConfig) !TFConnect {
 	return TFConnect{
 		app_id: config.app_id
 		redirect_url: config.redirect_url
-		pk_decoded: []
-		sk_decoded: []
+		callback: config.callback
+		pk_decoded: pk_decoded_32
+		sk_decoded: sk_decoded_64
 	}
 }
 

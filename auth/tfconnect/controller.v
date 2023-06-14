@@ -51,3 +51,4 @@ fn (mut app TFConnectController) abort(status int, message string) {
 	er := CustomResponse{status, message}
 	app.json(er.to_json())
 }
+

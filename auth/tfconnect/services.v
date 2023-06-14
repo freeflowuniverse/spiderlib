@@ -19,7 +19,7 @@ pub fn (tfconnect TFConnect) create_login_url() string {
 			'user':  true
 			'email': true
 		})
-		'redirecturl': '/auth/callback'
+		'redirecturl': tfconnect.callback
 		'publickey':   base64.encode(server_curve_pk[..])
 	}
 	return '${redirect_url}?${url_encode(params)}'
@@ -65,7 +65,7 @@ pub fn load_signed_attempt(data map[string]string) !SignedAttempt {
 	// 	double_name: request_data.as_map()['double_name']!.str()
 	// }
 
-pub fn (mut app TFConnect) verify(data SignedAttempt) !string {
+pub fn (app TFConnect) verify(data SignedAttempt) !string {
 	
 	if data.double_name == '' {
 		return TFConnectError {msg: no_double_name}
@@ -162,7 +162,6 @@ fn request_to_get_pub_key(username string) !http.Response {
 	}
 	url := 'https://login.threefold.me/api/users/${username}'
 	resp := http.fetch(http.FetchConfig{ ...config, url: url })!
-	println(resp)
 	return resp
 }
 
