@@ -12,6 +12,9 @@
 - docsify support
 - static webserver
 - integrated with javascript libs on weblib repo, (no reason to download anything from web)
+- payment by means of stripe or ...
+- login by means of keplr (cosmos browser plugin)
+- payment by means from currencies coming from cosmos ecosystem e.g. ATOM
 
 ## what we try to resolve
 
