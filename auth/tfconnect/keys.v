@@ -6,11 +6,13 @@ import libsodium
 import encoding.base64
 import term
 
+// pk sk for tfconnect client
 pub struct Keypair {
-	public_key string [required]
+	public_key  string [required]
 	private_key string [required]
 }
 
+// generates keypair for tfconnect
 fn create_keypair() Keypair {
 	sk_key := []u8{len: 32}
 	pk_key := []u8{len: 32}
@@ -18,13 +20,14 @@ fn create_keypair() Keypair {
 
 	encoded_pk := base64.encode(pk_key)
 	encoded_sk := base64.encode(sk_key)
-	
-	return Keypair {
+
+	return Keypair{
 		public_key: encoded_pk
 		private_key: encoded_sk
 	}
 }
 
+// creates and writes keys to keys.toml file
 fn write_keys() ! {
 	keypair := create_keypair()
 	encoded_pk, encoded_sk := keypair.public_key, keypair.private_key

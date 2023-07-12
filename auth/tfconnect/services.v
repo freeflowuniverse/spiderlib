@@ -8,6 +8,8 @@ import libsodium
 import net.http
 import rand
 
+// todo: inquire and document timeout
+// create_login_url creates a one time redirect url for threefold connect authentication
 pub fn (tfconnect TFConnect) create_login_url() string {
 	server_curve_pk := []u8{len: 32}
 	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(server_curve_pk.data, &tfconnect.pk_decoded[0])
@@ -15,10 +17,7 @@ pub fn (tfconnect TFConnect) create_login_url() string {
 	params := {
 		'state':       state
 		'appid':       tfconnect.app_id
-		'scope':       json.encode({
-			'user':  true
-			'email': true
-		})
+		'scope':       json.encode(tfconnect.scopes)
 		'redirecturl': tfconnect.callback
 		'publickey':   base64.encode(server_curve_pk[..])
 	}
@@ -38,6 +37,7 @@ fn url_encode(map_ map[string]string) string {
 	return formated
 }
 
+// load_signed_attempt decodes a signed attempt from the redirect query after authentication challenge
 pub fn load_signed_attempt(data map[string]string) !SignedAttempt {
 	if data == {} {
 		return error('400, signed_attempt_missing')
@@ -50,25 +50,13 @@ pub fn load_signed_attempt(data map[string]string) !SignedAttempt {
 	return initial_data
 }
 
-	// mut file_path := os.args_after('.')
-	// if file_path.len <= 1 {
-	// 	server.abort(400, file_dose_not_exist)
-	// }
-	// file_path << '.'
-	// keys := parse_keys(file_path[1])!
-	// server_public_key := keys.value('server.SERVER_PUBLIC_KEY').string()
-	// server_private_key := keys.value('server.SERVER_SECRET_KEY').string()
-
-	// request_data := json2.raw_decode(server.Context.req.data)!
-	// data := SignedAttempt{
-	// 	signed_attempt: request_data.as_map()['signed_attempt']!.str()
-	// 	double_name: request_data.as_map()['double_name']!.str()
-	// }
-
+// verify verifies a sign attempt with the users public key
+// returns email, users tfconnect email from the sei's body
 pub fn (app TFConnect) verify(data SignedAttempt) !string {
-	
 	if data.double_name == '' {
-		return TFConnectError {msg: no_double_name}
+		return TFConnectError{
+			msg: no_double_name
+		}
 	}
 
 	res := request_to_get_pub_key(data.double_name)!
@@ -88,7 +76,9 @@ pub fn (app TFConnect) verify(data SignedAttempt) !string {
 	verifed := verify_key.verify(base64.decode(signed_data))
 
 	if verifed == false {
-		return TFConnectError {msg: data_verfication_field}
+		return TFConnectError{
+			msg: data_verfication_field
+		}
 	}
 
 	verified_data := base64.decode(signed_data)
@@ -98,15 +88,21 @@ pub fn (app TFConnect) verify(data SignedAttempt) !string {
 	res_data_struct := ResultData{data_obj.as_map()['doubleName']!.str(), data_obj.as_map()['signedState']!.str(), data_.as_map()['nonce']!.str(), data_.as_map()['ciphertext']!.str()}
 
 	if res_data_struct.double_name == '' {
-		return TFConnectError {msg: not_contain_doublename}
+		return TFConnectError{
+			msg: not_contain_doublename
+		}
 	}
 
 	if res_data_struct.state == '' {
-		return TFConnectError {msg: not_contain_state}
+		return TFConnectError{
+			msg: not_contain_state
+		}
 	}
 
 	if res_data_struct.double_name != data.double_name {
-		return TFConnectError {msg: username_mismatch}
+		return TFConnectError{
+			msg: username_mismatch
+		}
 	}
 
 	nonce := base64.decode(res_data_struct.nonce)
@@ -139,14 +135,18 @@ pub fn (app TFConnect) verify(data SignedAttempt) !string {
 	response := json2.raw_decode(response_email.as_map()['email']!.str())!
 
 	if response.as_map()['email']!.str() == '' {
-		return TFConnectError {msg: data_decrypting_error}
+		return TFConnectError{
+			msg: data_decrypting_error
+		}
 	}
 
 	sei := response.as_map()['sei']!
 	verify_sei := request_to_verify_sei(sei.str())!
 
 	if verify_sei.status_code != 200 {
-		return TFConnectError {msg: email_not_verified}
+		return TFConnectError{
+			msg: email_not_verified
+		}
 	}
 
 	return '${verify_sei.body}'
