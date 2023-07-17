@@ -11,7 +11,7 @@ pub:
 	app_id       string // host of the application (ex: http://localhost:8080)
 	redirect_url string = 'https://login.threefold.me' // tfconnect auth url to be redirect for auth
 	callback     string // path of host which tfconnect will redirect to after authentication attempt (ex: /callback)
-	scopes       string // scopes of user info requested from TFConnect
+	scopes       Scopes // scopes of user info requested from TFConnect
 	pk_decoded   []u8   [required] // public key generated for tfconnect
 	sk_decoded   []u8   [required] // private key generated for tfconnect
 }

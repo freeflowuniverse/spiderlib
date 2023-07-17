@@ -9,6 +9,7 @@ pub:
 	app_id   string   [required] // host of the application (ex: http://localhost:8080)
 	callback string   // by default, calls back to host url
 	keypair  ?Keypair // keypair for creating TFConnect url and decrypting callback data
+	scopes   Scopes
 }
 
 // new creates and configures TFConnect struct with formatted keys
@@ -26,6 +27,7 @@ pub fn new(config TFConnectConfig) !TFConnect {
 		callback: config.callback
 		pk_decoded: pk_decoded_32
 		sk_decoded: sk_decoded_64
+		scopes: config.scopes
 	}
 }
 

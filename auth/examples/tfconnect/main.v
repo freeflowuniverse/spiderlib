@@ -30,25 +30,28 @@ pub fn (mut app TFConnectApp) callback() vweb.Result {
 		app.error('Could not verify signed tfconnect login attempt')
 		return app.server_error(400)
 	}
-    return app.json(json.encode(res))
+	return app.json(json.encode(res))
 }
 
 pub fn (mut app TFConnectApp) not_found() vweb.Result {
-    app.set_status(404, 'Not Found')
-    return app.html('<h1>Page not found</h1>')
+	app.set_status(404, 'Not Found')
+	return app.html('<h1>Page not found</h1>')
 }
 
 fn main() {
-	do() or { panic('Failed to run example:\n$err') }
+	do() or { panic('Failed to run example:\n${err}') }
 }
 
 fn do() ! {
 	authenticator := tfconnect.new(
 		app_id: 'localhost:8080'
 		callback: '/callback'
+		scopes: tfconnect.Scopes{
+			email: true
+		}
 	)!
-    mut app := &TFConnectApp{
+	mut app := &TFConnectApp{
 		authenticator: authenticator
-    }
-    vweb.run(app, 8080)
+	}
+	vweb.run(app, 8080)
 }
