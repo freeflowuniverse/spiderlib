@@ -1,0 +1,9 @@
+<nav style="border: 5px solid lightgrey;">
+    <ul style="display: flex; flex-direction: column; padding: 1rem 2.5rem;">
+    @for navitem in sidebar.navitems
+        <li style="list-style: none; margin:0.5rem 0.5rem;">
+            <a @{navitem.htmx.stringify()} href="@navitem.url">@navitem.label</a>
+        </li>
+    @end
+    </ul>
+</nav>
