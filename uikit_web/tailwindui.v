@@ -1,4 +1,4 @@
-module main
+module uikitweb
 
 import freeflowuniverse.spiderlib.uikit
 import freeflowuniverse.spiderlib.uikit.tailwindui
@@ -55,8 +55,8 @@ pub fn (mut app TailwindUI) tailwindui_shells() vweb.Result {
 ['/shells/dark_nav_with_page_header'; GET]
 pub fn (mut app TailwindUI) shells_dark_nav_with_page_header() vweb.Result {
 	shell := tailwindui.DarkNavWithPageHeader{
-		navbar: mock_navbar
-		page: mock_page
+		navbar: uikit_web.mock_navbar
+		page: uikit_web.mock_page
 	}
-	return app.html('${tw_link}${shell}')
+	return app.html('${uikit_web.tw_link}${shell}')
 }

@@ -1,4 +1,4 @@
-module main
+module tfpayments
 
 import freeflowuniverse.spiderlib.stellarclient
 import vweb
