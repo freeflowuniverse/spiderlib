@@ -1,5 +1,5 @@
 layout := Layout {
 	sidebar: Sidebar {
-		links: 
+		links: "",
 	}
 }

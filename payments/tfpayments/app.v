@@ -1,4 +1,4 @@
-module main
+module tfpayments
 
 import vweb
 import freeflowuniverse.crystallib.threefold.twinclient { TwinClient }
