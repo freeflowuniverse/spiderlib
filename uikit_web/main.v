@@ -72,14 +72,6 @@ pub fn (mut app App) index() vweb.Result {
 	return $vweb.html()
 }
 
-pub fn (mut app App) home() vweb.Result {
-	page := uikit.Page{
-		title: 'Home Page'
-		description: 'Sample home page'
-	}
-	return $vweb.html()
-}
-
 pub fn main() {
 	dir := os.dir(@FILE)
 	os.execute('tailwindcss -i ${dir}/index.css -o ${dir}/static/css/index.css --minify')
