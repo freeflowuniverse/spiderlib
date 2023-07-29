@@ -16,9 +16,10 @@ pub:
 	sk_decoded   []u8   [required] // private key generated for tfconnect
 }
 
+// The user information scopes requested from TFConnect
 pub struct Scopes {
-	user  bool
-	email bool
+	user  bool // TFConnect user identifier  (.3bot)
+	email bool // TFConnect user email
 }
 
 // Data returned upon TFConnect auth callback

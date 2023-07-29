@@ -44,3 +44,21 @@ fn write_keys() ! {
 	os.write_file('${file_path[1]}/keys.toml', '[server]\nSERVER_PUBLIC_KEY="${encoded_pk}"\nSERVER_SECRET_KEY="${encoded_sk}"')!
 	println('Public, Private keys generated at ${file_path[1]}')
 }
+
+// creates and writes keys to keys.toml file
+fn load_keys() ! {
+	keypair := create_keypair()
+	encoded_pk, encoded_sk := keypair.public_key, keypair.private_key
+
+	mut file_path := os.args_after('.')
+	if file_path.len <= 1 {
+		println(term.red('You have to pass the path that you want to create the file in when you run create_keys file'))
+		println(term.yellow('e.g.'))
+		println(term.green('v run create_keys ../'))
+		return
+	}
+	println(os.abs_path(file_path[1]))
+	os.create(os.abs_path('${file_path[1]}/keys.toml'))!
+	os.write_file('${file_path[1]}/keys.toml', '[server]\nSERVER_PUBLIC_KEY="${encoded_pk}"\nSERVER_SECRET_KEY="${encoded_sk}"')!
+	println('Public, Private keys generated at ${file_path[1]}')
+}
