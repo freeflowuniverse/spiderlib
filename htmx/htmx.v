@@ -5,28 +5,30 @@ import freeflowuniverse.crystallib.pathlib { Path }
 type Pathbool = Path | bool
 
 pub struct HTMX {
-	boost      bool
-	get        string
-	post       string
-	put        string
-	delete     string
-	push_url   string
-	select_oob string
-	swap       string
-	swap_oob   string
-	target     string
-	trigger    string
-	vals       string
+	boost      ?bool
+	get        ?string
+	post       ?string
+	put        ?string
+	delete     ?string
+	push_url   ?string
+	select_oob ?string
+	swap       ?string
+	swap_oob   ?string
+	target     ?string
+	trigger    ?string
+	vals       ?string
 }
 
-pub fn (hx HTMX) stringify() string {
-	obj_str := hx.str().trim_right('\n}')
-	attributes := obj_str.split('\n')
-	mut repr := ''
-	for line in attributes[1..].filter(it.split(': ')[1] != "''") {
-		key := line.split(': ')[0].trim_left(' ')
-		val := line.split(': ')[1].trim_left("'").trim_right("'")
-		repr += 'hx-${key.replace('_', '-')}=$val '
+pub fn (hx HTMX) str() string {
+	mut attributes := []string{}
+	$for field in HTMX.fields {
+		val := hx.$(field.name)
+		if field.is_option && val != none {
+			// hack around to unwrap optional
+			val_str := '${val}'.all_after('Option').trim('\'()')
+			attributes << "hx-${field.name.replace('_', '-')}=${val_str}"
+		}
 	}
-	return repr
+	return attributes.join(' ')
 }
+
