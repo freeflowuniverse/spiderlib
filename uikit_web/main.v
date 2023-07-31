@@ -2,6 +2,7 @@ import vweb
 import freeflowuniverse.spiderlib.htmx
 import freeflowuniverse.spiderlib.uikit
 import freeflowuniverse.spiderlib.uikit.tailwindui
+import freeflowuniverse.spiderlib.uikit_web.flowbite_controller
 import os
 // import freeflowuniverse.spiderlib.uikit2.tailwindui.sidebar {LightSidebar, Link}
 
@@ -74,10 +75,13 @@ pub fn (mut app App) index() vweb.Result {
 
 pub fn main() {
 	dir := os.dir(@FILE)
+	os.chdir(dir)!
 	os.execute('tailwindcss -i ${dir}/index.css -o ${dir}/static/css/index.css --minify')
+
 	mut app := &App{
 		controllers: [
 			vweb.controller('/tailwindui', &TailwindUI{}),
+			vweb.controller('/flowbite', &flowbite_controller.Flowbite{}),
 		]
 	}
 	app.mount_static_folder_at('${dir}/static', '/static')
