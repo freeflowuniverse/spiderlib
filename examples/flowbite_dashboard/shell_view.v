@@ -6,6 +6,12 @@ import os
 // import freeflowuniverse.spiderlib.uikit2.tailwindui.sidebar {LightSidebar, Link}
 
 pub fn (mut app App) index() vweb.Result {
+	profile_button := flowbite.NavButton{
+		label: 'Sign In'
+		logo: 'dashboard'
+		route: '/login'
+	}
+
 	navbar := flowbite.Navbar{
 		logo: 'logo'
 		// search_htmx: htmx.HTMX{}
@@ -20,6 +26,7 @@ pub fn (mut app App) index() vweb.Result {
 				logo: 'apps'
 				dropdown: flowbite.AppsDropdown{}
 			},
+			profile_button,
 			// flowbite.ProfileDropdown{},
 		]
 	}
