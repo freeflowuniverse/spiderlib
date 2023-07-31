@@ -29,8 +29,8 @@ mut: // route which will handle the authentication link click
 
 // Is initialized when an auth link is sent
 // Represents the state of the authentication session
-struct AuthSession {
-mut:
+pub struct AuthSession {
+pub mut:
 	timeout       time.Time
 	auth_code     string // hex representation of 64 bytes
 	attempts_left int = 3
@@ -77,12 +77,24 @@ pub fn (mut auth Authenticator) send_verification_email(email string) AuthSessio
 	return auth.sessions[email]
 }
 
+// result of an authentication attempt
+// returns time and attempts remaining
+pub struct AttemptResult {
+pub:
+	authenticated bool
+	attempts_left int
+	time_left     time.Time
+}
+
 // authenticates if email/cypher combo correct within timeout and remaining attemts
 // TODO: address based request limits recognition to prevent brute
 // TODO: max allowed request per seccond to prevent dos
-pub fn (mut auth Authenticator) authenticate(email string, cypher string) AuthSession {
+pub fn (mut auth Authenticator) authenticate(email string, cypher string) !AttemptResult {
 	if auth.sessions[email].attempts_left <= 0 { // checks if remaining attempts
-		return auth.sessions[email]
+		return AttemptResult{
+			authenticated: false
+			attempts_left: 0
+		}
 	}
 
 	// authenticates if cypher in link matches authcode
@@ -91,10 +103,20 @@ pub fn (mut auth Authenticator) authenticate(email string, cypher string) AuthSe
 			eprintln(@FN + ':\nUser authenticated email: ${email}')
 		}
 		auth.sessions[email].authenticated = true
+		result := AttemptResult{
+			authenticated: true
+			attempts_left: auth.sessions[email].attempts_left
+		}
+		return result
 	} else {
 		auth.sessions[email].attempts_left -= 1
+		result := AttemptResult{
+			authenticated: false
+			attempts_left: auth.sessions[email].attempts_left
+		}
+		return result
 	}
-	return auth.sessions[email]
+	// return auth.sessions[email]
 }
 
 // function to check if an email is authenticated
