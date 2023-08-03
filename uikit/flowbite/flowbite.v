@@ -25,3 +25,12 @@ pub struct Footer {
 pub fn (sidebar Footer) str() string {
 	return $tmpl('./templates/footer.html')
 }
+
+pub struct Content {
+	uikit.Content
+}
+
+pub fn (content Content) str() string {
+	return $tmpl('./templates/content.html')
+}
+

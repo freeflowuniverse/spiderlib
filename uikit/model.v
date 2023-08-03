@@ -100,3 +100,8 @@ pub:
 	title   string
 	content string
 }
+
+pub struct Content {
+pub:
+	content string
+}

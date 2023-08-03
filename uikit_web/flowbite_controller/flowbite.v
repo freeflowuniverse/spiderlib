@@ -2,7 +2,7 @@ module flowbite_controller
 
 import freeflowuniverse.spiderlib.uikit
 import freeflowuniverse.spiderlib.uikit.flowbite
-import freeflowuniverse.spiderlib.uikit.wireframe
+// import freeflowuniverse.spiderlib.uikit.wireframe
 import vweb
 
 pub struct Flowbite {
@@ -41,6 +41,17 @@ const mock_page = uikit.Page{
 	title: 'Mock Title'
 }
 
+const not_found = flowbite.NotFoundPage {
+	title: 'Page not found'
+	content: 'Oops! Looks like you followed a bad link. If you think this is a problem with us, please tell us.'
+	link: '/'
+	button: 'Go back home'
+}
+
+const content = flowbite.Content {
+	content: 'test'
+}
+
 const mock_footer = flowbite.Footer{}
 
 // pub fn (mut app Flowbite) index() vweb.Result {
@@ -64,7 +75,7 @@ pub fn (mut app Flowbite) shell() vweb.Result {
 		navbar: flowbite_controller.mock_navbar
 		sidebar: flowbite_controller.mock_sidebar
 		footer: flowbite_controller.mock_footer
-		content: flowbite_controller.mock_page
+		content: flowbite_controller.content	
 	}
 	return app.html('${flowbite_controller.tw_link}${shell}')
 }
@@ -77,3 +88,8 @@ pub fn (mut app Flowbite) shell() vweb.Result {
 // 	}
 // 	return app.html('${tw_link}${shell}')
 // }
+pub fn (mut app Flowbite) not_found() vweb.Result {
+	data := flowbite_controller.not_found
+	app.set_status(404, 'Not Found')
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
