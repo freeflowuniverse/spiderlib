@@ -56,11 +56,11 @@ pub fn (mut app TailwindUI) tailwindui_shells() vweb.Result {
 	return $vweb.html()
 }
 
-['/shells/dark_nav_with_page_header'; GET]
-pub fn (mut app TailwindUI) shells_dark_nav_with_page_header() vweb.Result {
-	shell := tailwindui.DarkNavWithPageHeader{
-		navbar: mock_navbar
-		page: mock_page
-	}
-	return app.html('${tw_link}${shell}')
-}
+// ['/shells/dark_nav_with_page_header'; GET]
+// pub fn (mut app TailwindUI) shells_dark_nav_with_page_header() vweb.Result {
+// 	shell := tailwindui.DarkNavWithPageHeader{
+// 		navbar: mock_navbar
+// 		page: mock_page
+// 	}
+// 	return app.html('${tw_link}${shell}')
+// }

@@ -41,16 +41,38 @@ const mock_page = uikit.Page{
 	title: 'Mock Title'
 }
 
-const not_found = flowbite.NotFoundPage {
+const not_found = flowbite.NotFoundPage{
 	title: 'Page not found'
 	content: 'Oops! Looks like you followed a bad link. If you think this is a problem with us, please tell us.'
-	link: '/'
+	link: '/flowbite/shell'  // will be replaced with home link
 	button: 'Go back home'
 }
 
-const content = flowbite.Content {
+const content = flowbite.Content{
 	content: 'test'
 }
+
+const forgot_pass = flowbite.ForgotPassword{
+	title: 'Forgot your password?'
+	content: "Don't fret! Just type in your email and we will send you a code to reset your password!"
+}
+
+const profile_lock = flowbite.ProfileLock{
+	title: 'Better to be safe than sorry.'
+}
+
+const reset_password = flowbite.ResetPassword{
+	title: 'Reset your password'
+}
+
+const sign_in = flowbite.LoginPage{
+	title: 'Sign in to platform'
+}
+
+const sign_up = flowbite.SignUp{
+	title: 'Create a Free Account'
+}
+
 
 const mock_footer = flowbite.Footer{}
 
@@ -75,7 +97,7 @@ pub fn (mut app Flowbite) shell() vweb.Result {
 		navbar: flowbite_controller.mock_navbar
 		sidebar: flowbite_controller.mock_sidebar
 		footer: flowbite_controller.mock_footer
-		content: flowbite_controller.content	
+		content: flowbite_controller.content
 	}
 	return app.html('${flowbite_controller.tw_link}${shell}')
 }
@@ -88,6 +110,32 @@ pub fn (mut app Flowbite) shell() vweb.Result {
 // 	}
 // 	return app.html('${tw_link}${shell}')
 // }
+
+pub fn (mut app Flowbite) forgot_password() vweb.Result {
+	data := flowbite_controller.forgot_pass
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
+
+pub fn (mut app Flowbite) profile_lock() vweb.Result {
+	data := flowbite_controller.profile_lock
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
+
+pub fn (mut app Flowbite) reset_password() vweb.Result {
+	data := flowbite_controller.reset_password
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
+
+pub fn (mut app Flowbite) sign_in() vweb.Result {
+	data := flowbite_controller.sign_in
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
+
+pub fn (mut app Flowbite) sign_up() vweb.Result {
+	data := flowbite_controller.sign_up
+	return app.html('${flowbite_controller.tw_link}${data}')
+}
+
 pub fn (mut app Flowbite) not_found() vweb.Result {
 	data := flowbite_controller.not_found
 	app.set_status(404, 'Not Found')

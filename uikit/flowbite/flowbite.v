@@ -1,7 +1,7 @@
 module flowbite
 
 import freeflowuniverse.spiderlib.uikit
-import freeflowuniverse.spiderlib.htmx
+// import freeflowuniverse.spiderlib.htmx
 
 pub struct Shell {
 	uikit.Shell
