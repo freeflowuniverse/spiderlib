@@ -22,7 +22,7 @@ module.exports = {
     "bg-opacity-50",
     "dark:bg-opacity-80",
   ],
-  darkMode: "class",
+  darkMode: "media",
   theme: {
     extend: {
       colors: {
@@ -94,6 +94,4 @@ module.exports = {
       },
     },
   },
-
-  plugins: [require("flowbite/plugin")],
 };
