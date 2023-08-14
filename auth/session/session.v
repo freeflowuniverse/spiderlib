@@ -51,22 +51,19 @@ pub fn (mut auth Authenticator) new_refresh_token(params RefreshTokenParams) str
 
 [params]
 pub struct AccessTokenParams {
-	TokenParams
 	expiration    time.Time = time.now().add(15 * time.minute)
 	refresh_token jwt.SignedJWT [required]
 }
 
 pub fn (mut auth Authenticator) new_access_token(params AccessTokenParams) !string {
 	if !auth.authenticate_refresh_token(params.refresh_token)! {
+		auth.logger.info('Session authenticator: Failed to authenticate refresh token')
 		return error('Refresh token not authenticated')
 	}
-	subject := params.refresh_token.decode_subject()!
-	if subject != params.uuid {
-		return error('Refresh token and access token subject must be same')
-	}
+	refresh_token := params.refresh_token.decode()!
 	token := jwt.create_token(
-		sub: params.uuid
-		iss: params.issuer
+		sub: refresh_token.sub
+		iss: refresh_token.iss
 		exp: params.expiration
 	)
 	signed_token := token.sign(auth.access_secret)
@@ -75,19 +72,20 @@ pub fn (mut auth Authenticator) new_access_token(params AccessTokenParams) !stri
 
 fn (mut auth Authenticator) authenticate_refresh_token(token jwt.SignedJWT) !bool {
 	if !token.verify(auth.refresh_secret)! {
-		auth.logger.info('Failed to verify refresh token')
+		auth.logger.debug('Session authenticator: Failed to verify signature of refresh token')
 		return false
 	}
-	decoded_token := token.decode() or { panic('Failed to decode token\n ${err}') }
+	decoded_token := token.decode() or { panic('Session authenticator: Failed to decode token:\n ${err}') }
 	if decoded_token.is_expired() {
-		auth.logger.info('Access token has expired')
+		auth.logger.debug('Session authenticator: Refresh token has expired')
+		return false
 	}
 	if decoded_token.sub !in auth.sessions {
-		auth.logger.info('Subject of refresh token not registered')
+		auth.logger.debug('Session authenticator: Subject of refresh token not registered')
 		return false
 	}
 	if token !in auth.sessions[decoded_token.sub] {
-		auth.logger.info('Refresh token does not belong to subject')
+		auth.logger.debug('Session authenticator: Refresh token does not belong to subject')
 		return false
 	}
 	return true

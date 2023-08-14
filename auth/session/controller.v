@@ -1,9 +1,8 @@
 module session
 
 import vweb
-import time
-import net.http
 import json
+import log
 
 // session controller that be be added to vweb projects
 pub struct Controller {
@@ -11,10 +10,19 @@ pub struct Controller {
 	authenticator shared Authenticator [required]
 }
 
+pub fn new_controller(logger &log.Logger) Controller {
+	mut auth := Authenticator{
+		logger: unsafe { logger }
+	}
+	return Controller{
+		authenticator: auth
+	}
+}
+
 // route responsible for verifying email, email form should be posted here
 [POST]
 pub fn (mut app Controller) new_refresh_token() !vweb.Result {
-	params := json.decode(RefreshTokenParams, app.req.data)!
+	params := json.decode(RefreshTokenParams, app.req.data) or {panic('cant decode:${err}')}
 	lock app.authenticator {
 		token := app.authenticator.new_refresh_token(params)
 		return app.json(token)
