@@ -1,10 +1,5 @@
 module tfconnect
 
-import vweb
-import json
-import encoding.base64
-import toml
-
 [noinit]
 pub struct TFConnect {
 pub:
