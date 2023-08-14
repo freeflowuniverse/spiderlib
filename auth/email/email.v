@@ -3,6 +3,7 @@ module email
 import time
 import net.smtp
 import crypto.rand
+import log
 
 pub struct VerificationEmail {
 pub:
@@ -20,11 +21,13 @@ const default_mail = VerificationEmail{
 // Creates, manages and deals email auth sessions
 // sessions are indexed by email address
 pub struct Authenticator {
+pub:
 	client     smtp.Client       [required] // smtp client which will be used to send email
 	email      VerificationEmail = email.default_mail // the mail to be sent with verification. Link is added to the end of the body.
 	auth_route string            [required]
 mut: // route which will handle the authentication link click
 	sessions map[string]AuthSession // map of active authentication sessions
+	logger   &log.Logger
 }
 
 // Is initialized when an auth link is sent
