@@ -60,7 +60,7 @@ pub fn (token JsonWebToken) sign(secret string) string {
 }
 
 pub fn (token JsonWebToken) is_expired() bool {
-	return token.exp > time.now()
+	return token.exp <= time.now()
 }
 
 pub type SignedJWT = string
