@@ -8,9 +8,14 @@ import libsodium
 import net.http
 import rand
 
+[params]
+pub struct LoginUrlConfig {
+	app_id string
+}
+
 // todo: inquire and document timeout
 // create_login_url creates a one time redirect url for threefold connect authentication
-pub fn (tfconnect TFConnect) create_login_url() string {
+pub fn (tfconnect TFConnect) create_login_url(config LoginUrlConfig) string {
 	server_curve_pk := []u8{len: 32}
 	_ := libsodium.crypto_sign_ed25519_pk_to_curve25519(server_curve_pk.data, &tfconnect.pk_decoded[0])
 	state := rand.uuid_v4().replace('-', '')

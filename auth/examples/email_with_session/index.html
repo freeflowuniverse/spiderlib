@@ -3,9 +3,8 @@
         <script src="/static/htmx.min.js"></script>
     </head>
     <h1>Email Authentication Example</h1>
-    <p></p>
-    <div hx-get="/verification_sent" hx-trigger="submit from:#email-form" hx-target="this"></div>
-    <form id="email-form" hx-post="@verify_path" hx-trigger="submit once">
+    <p>The current user is: @{user}</p>
+    <form id="email-form" hx-post="@verify_path">
         <label for="email">Email</label>
         <input id="email" type="email" name="email"/>
     </form>

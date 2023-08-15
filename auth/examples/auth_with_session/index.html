@@ -5,7 +5,7 @@
     <h1>Email Authentication Example</h1>
     <p></p>
     <div hx-get="/verification_sent" hx-trigger="submit from:#email-form"></div>
-    <form id="email-form" hx-post="@verify_path">
+    <form >
         <label for="email">Email</label>
         <input id="email" type="email" name="email"/>
     </form>

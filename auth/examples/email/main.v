@@ -52,9 +52,9 @@ pub fn (mut app EmailApp) verification_sent() vweb.Result {
 }
 
 ['/authenticate/:address/:cypher']
-pub fn (mut app EmailApp) authenticate(address string, cypher string) vweb.Result {
+pub fn (mut app EmailApp) authenticate(address string, cypher string) !vweb.Result {
 	lock app.authenticator {
-		app.authenticator.authenticate(address, cypher)
+		app.authenticator.authenticate(address, cypher)!
 	}
 	return app.html('Email verified')
 }

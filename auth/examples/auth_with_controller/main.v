@@ -4,32 +4,21 @@ import freeflowuniverse.spiderlib.auth.email
 import os
 import vweb
 import net.smtp
+import net.http
 import toml
+import json
 
 // Example vweb application with Email Authenticator
 struct EmailApp {
 	vweb.Context
 	vweb.Controller
+	client email.Client
 }
 
 // home page, nothing but an email form that posts input to /login
 pub fn (mut app EmailApp) index() vweb.Result {
-	verify_path := 'auth/verify_email'
+	verify_path := 'verify_email'
 	return $vweb.html()
-}
-
-struct EmailForm {
-	email string
-}
-
-// html returned when verification email is sent
-pub fn (mut app EmailApp) verification_sent() vweb.Result {
-	return app.html('Verification email sent')
-}
-
-pub fn (mut app EmailApp) not_found() vweb.Result {
-	app.set_status(404, 'Not Found')
-	return app.html('<h1>Page not found</h1>')
 }
 
 fn create_authenticator() email.Authenticator {
@@ -46,7 +35,7 @@ fn create_authenticator() email.Authenticator {
 	}
 	return email.Authenticator{
 		client: client
-		auth_route: 'localhost:8080/auth/authenticate'
+		auth_route: 'localhost:8080/verification_link'
 	}
 }
 
@@ -58,12 +47,17 @@ fn main() {
 	os.chdir('${dir}/static')!
 	os.execute('curl -sLO https://raw.githubusercontent.com/freeflowuniverse/weblib/main/htmx/htmx.min.js')
 
+	mut controller := email.Controller{
+		authenticator: create_authenticator()
+	}
+
 	// create and run app with authenticator
 	mut app := &EmailApp{
+		client: email.Client{
+			url: 'localhost:8080/email_controller'
+		}
 		controllers: [
-			vweb.controller('/auth', &email.Controller{
-				authenticator: create_authenticator()
-			}),
+			vweb.controller('/email_controller', &controller),
 		]
 	}
 	app.mount_static_folder_at('${dir}/static', '/static')

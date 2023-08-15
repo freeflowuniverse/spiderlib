@@ -22,7 +22,7 @@ pub fn new_controller(logger &log.Logger) Controller {
 // route responsible for verifying email, email form should be posted here
 [POST]
 pub fn (mut app Controller) new_refresh_token() !vweb.Result {
-	params := json.decode(RefreshTokenParams, app.req.data) or {panic('cant decode:${err}')}
+	params := json.decode(RefreshTokenParams, app.req.data) or { panic('cant decode:${err}') }
 	lock app.authenticator {
 		token := app.authenticator.new_refresh_token(params)
 		return app.json(token)
@@ -34,7 +34,7 @@ pub fn (mut app Controller) new_refresh_token() !vweb.Result {
 pub fn (mut app Controller) new_access_token() !vweb.Result {
 	params := json.decode(AccessTokenParams, app.req.data)!
 	lock app.authenticator {
-		token := app.authenticator.new_access_token(params)!
+		token := app.authenticator.new_access_token(params) or { return app.server_error(500) }
 		return app.json(token)
 	}
 	return app.ok('')

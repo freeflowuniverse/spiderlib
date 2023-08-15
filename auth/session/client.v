@@ -10,12 +10,14 @@ pub struct Client {
 
 pub fn (c Client) new_refresh_token(params RefreshTokenParams) !string {
 	resp := http.post('${c.url}/new_refresh_token', json.encode(params))!
+	// todo response error check
 	token := resp.body.trim('"')
 	return token
 }
 
 pub fn (c Client) new_access_token(params AccessTokenParams) !string {
 	resp := http.post('${c.url}/new_access_token', json.encode(params))!
+	// todo response error check
 	token := resp.body.trim('"')
 	return token
 }
