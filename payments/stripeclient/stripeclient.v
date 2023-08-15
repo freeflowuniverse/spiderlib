@@ -22,12 +22,10 @@ fn (client StripeClient) post_request(endpoint string, data_ string) !string {
 	}
 	request.add_header(http.CommonHeader.authorization, 'Basic ${client.sk_test}')
 	request.add_header(http.CommonHeader.content_type, 'application/x-www-form-urlencoded')
-	println('reqqy: ${request}')
 	response := request.do() or { panic('Failed to send request to API.') }
 	// returns error if receives error response
 	if response.body.contains('"error": {') {
 		// todo: better error handling
-		println('resp: ${response}')
 		return error('fail')
 	}
 	return response.body

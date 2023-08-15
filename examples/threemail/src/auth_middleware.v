@@ -26,7 +26,6 @@ pub fn (mut app App) get_user() bool {
 			app.logger.debug('Refresh token is expired, user must authenticate to create new session')
 			return true
 		}
-		println('req')
 		access_token_str = app.session_client.new_access_token(refresh_token: refresh_token_str) or {
 			app.logger.error('Failed to create new access token: ${err}')
 			return true

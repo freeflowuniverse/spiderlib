@@ -68,7 +68,6 @@ fn create_authenticator() email.Authenticator {
 	env := toml.parse_file(os.dir(os.dir(@FILE)) + '/.env') or {
 		panic('Could not find .env, ${err}')
 	}
-	println('here: ${env}')
 	client := smtp.Client{
 		server: 'smtp-relay.brevo.com'
 		from: 'verify@authenticator.io'

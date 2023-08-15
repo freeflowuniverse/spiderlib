@@ -73,10 +73,7 @@ pub fn (mut auth Authenticator) send_verification_email(email string) AuthSessio
 	// send email with link in body
 	client.send(mail) or { panic('Error resolving email address') }
 	client.quit() or { panic('Could not close connection to server') }
-	$if debug {
-		eprintln(@FN + ':\nSent verification email to: ${email}')
-	}
-
+	auth.logger.debug(@FN + ':\nSent verification email to: ${email}')
 	return auth.sessions[email]
 }
 
@@ -102,9 +99,7 @@ pub fn (mut auth Authenticator) authenticate(email string, cypher string) !Attem
 
 	// authenticates if cypher in link matches authcode
 	if cypher == auth.sessions[email].auth_code {
-		$if debug {
-			eprintln(@FN + ':\nUser authenticated email: ${email}')
-		}
+		auth.logger.debug(@FN + ':\nUser authenticated email: ${email}')
 		auth.sessions[email].authenticated = true
 		result := AttemptResult{
 			authenticated: true

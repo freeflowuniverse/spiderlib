@@ -37,7 +37,6 @@ pub fn (mut app App) add_contact_modal() !vweb.Result {
 pub fn (mut app App) add_contact() !vweb.Result {
 	user_id := app.get_value[string]('user_id') or { return app.unauthorized() }
 	data := http.parse_form(app.req.data)
-	println('data: ${data}')
 	contact := Contact{
 		name: '${data['first-name']} ${data['last-name']}'
 		email: data['email']

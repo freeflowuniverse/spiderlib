@@ -22,7 +22,6 @@ pub fn format(substring string, prefix string) !string {
 		return format_value(substring[cursor..end_cursor + 1], prefix)
 		// array
 	} else if substring[cursor].is_alnum() {
-		println('yoooo')
 		return format_value(substring, prefix)
 	} else if token == '[' {
 		end_cursor := index_closing_token(substring, cursor) or { panic('err1') }
@@ -125,7 +124,6 @@ fn format_map(substring string, prefix string) !string {
 		}
 		// value definition
 		else if token == ':' {
-			println('here')
 			if substring[cursor + 1].ascii_str() == '[' || substring[cursor + 1].ascii_str() == '{'
 				|| substring[cursor + 1].ascii_str() == '"' {
 				end_cursor := index_closing_token(substring, cursor + 1) or { panic('err44') }
