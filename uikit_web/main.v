@@ -76,7 +76,7 @@ pub fn (mut app App) index() vweb.Result {
 pub fn main() {
 	dir := os.dir(@FILE)
 	os.chdir(dir)!
-	os.execute('npx tailwindcss -i ${dir}/index.css -o ${dir}/static/css/index.css --minify')
+	os.execute('tailwindcss -i ${dir}/index.css -o ${dir}/static/css/index.css --minify')
 
 	mut app := &App{
 		controllers: [
