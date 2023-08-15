@@ -11,6 +11,7 @@ pub struct HTMX {
 	put        ?string
 	delete     ?string
 	push_url   ?string
+	select_	   ?string
 	select_oob ?string
 	swap       ?string
 	swap_oob   ?string
@@ -26,7 +27,7 @@ pub fn (hx HTMX) str() string {
 		if field.is_option && val != none {
 			// hack around to unwrap optional
 			val_str := '${val}'.all_after('Option').trim('\'()')
-			attributes << "hx-${field.name.replace('_', '-')}=${val_str}"
+			attributes << 'hx-${field.name.trim_string_right('_').replace('_', '-')}="${val_str}"'
 		}
 	}
 	return attributes.join(' ')

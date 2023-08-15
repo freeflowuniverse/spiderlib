@@ -39,3 +39,7 @@ pub fn form(params FormParams) HTMX {
 		post: params.post_path
 	}
 }
+
+// pub fn waiting_response() HTMX {
+
+// }
