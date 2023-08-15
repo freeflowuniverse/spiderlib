@@ -4,11 +4,16 @@ import freeflowuniverse.spiderlib.uikit
 // import freeflowuniverse.spiderlib.htmx
 
 pub struct Shell {
-	uikit.Shell
+pub:
+	navbar  Navbar
+	sidebar Sidebar
+	footer  Footer
 	router map[string]string
+pub mut:
+	route string
 }
 
-pub fn (shell Shell) str() string {
+pub fn (shell Shell) html() string {
 	return $tmpl('./templates/shell.html')
 }
 
@@ -22,7 +27,7 @@ pub struct Footer {
 	uikit.Footer
 }
 
-pub fn (sidebar Footer) str() string {
+pub fn (sidebar Footer) html() string {
 	return $tmpl('./templates/footer.html')
 }
 

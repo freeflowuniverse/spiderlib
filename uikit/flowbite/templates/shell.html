@@ -1,11 +1,10 @@
-@{shell.navbar}
-<div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
-    @{shell.sidebar}
+@{shell.navbar.html()}
+<div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900 max-h-screen min-h-full h-full">
+    @{shell.sidebar.html()}
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main class="bg-gray-50 dark:bg-gray-900">
-            <div id="outlet"></div>
-            @{shell.content}
+            <div id="outlet" hx-get="@shell.route" hx-trigger="load" class="min-h-full"></div>
         </main>
-        @{shell.footer}
+        @{shell.footer.html()}
     </div>
 </div>

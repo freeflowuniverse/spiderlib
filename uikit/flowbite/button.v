@@ -1,5 +1,7 @@
 module flowbite
 
+import freeflowuniverse.spiderlib.htmx
+
 type Button = AppButton | DropdownButton | NavButton
 
 pub struct AppButton {
@@ -20,11 +22,13 @@ pub:
 
 pub struct NavButton {
 pub:
+	htmx  htmx.HTMX
+	id    string
 	logo  string
 	label string
 	route string
 }
 
-pub fn (mut button NavButton) str() string {
+pub fn (button NavButton) html() string {
 	return $tmpl('templates/button/nav-button.html')
 }

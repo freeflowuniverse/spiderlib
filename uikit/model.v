@@ -1,6 +1,8 @@
 module uikit
 
 import freeflowuniverse.spiderlib.htmx
+// import freeflowuniverse.spiderlib.uikit.flowbite
+// import freeflowuniverse.spiderlib.uikit.tailwindui
 
 // All UIKit components must implement a string method that outputs their html code.
 pub interface IComponent {
@@ -105,3 +107,5 @@ pub struct Content {
 pub:
 	content string
 }
+
+// pub type PageComponent = FlowbitePage | TailwindUIPage
