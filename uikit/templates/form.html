@@ -1,0 +1,6 @@
+<form @{form.htmx}>
+    @for input in form.inputs
+        @{input.html()}
+    @end
+    @{form.button.html()}
+</form>

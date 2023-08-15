@@ -1,0 +1,12 @@
+
+<form @{form.htmx}>
+    @for input in form.inputs
+    <div class="mb-6">
+        @{input.html()}
+    </div>
+    @end
+    <div class=" w-full sm:w-auto px-5 py-2.5">
+    @{form.button.html()}
+    </div>
+</form>
+  

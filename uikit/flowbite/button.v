@@ -1,8 +1,17 @@
 module flowbite
 
 import freeflowuniverse.spiderlib.htmx
+import freeflowuniverse.spiderlib.uikit
 
 type Button = AppButton | DropdownButton | NavButton
+
+pub struct DefaultButton {
+	uikit.Button
+}
+
+pub fn (button DefaultButton) html() string {
+	return $tmpl('templates/button/default-button.html')
+}
 
 pub struct AppButton {
 pub:

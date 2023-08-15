@@ -4,10 +4,7 @@ import freeflowuniverse.spiderlib.htmx
 // import freeflowuniverse.spiderlib.uikit.flowbite
 // import freeflowuniverse.spiderlib.uikit.tailwindui
 
-// All UIKit components must implement a string method that outputs their html code.
-pub interface IComponent {
-	str() string
-}
+
 
 // the index of the file
 // holds metadata and scripts to be imported
@@ -39,11 +36,6 @@ pub interface INavbar {
 pub struct Navbar {
 pub:
 	nav []IButton
-}
-
-pub interface IButton {
-	label string
-	action string
 }
 
 pub interface ISidebar {

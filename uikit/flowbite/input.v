@@ -10,7 +10,7 @@ pub:
 	placeholder string
 }
 
-pub fn (input BasicInput) str() string {
+pub fn (input BasicInput) html() string {
 	return $tmpl('templates/input/basic-input.html')
 }
 
