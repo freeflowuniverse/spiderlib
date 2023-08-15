@@ -1,0 +1,8 @@
+{
+    "name": "threemail",
+    "description": "",
+    "dependencies": [
+        "tailwindcss",
+        "htmx"
+    ]
+}
