@@ -5,13 +5,13 @@ import crypto.sha256
 import crypto.bcrypt
 import encoding.base64
 import json
-import vweb.sse { SSEMessage }
+import vweb.sse
 import time
 import crypto.rand as crypto_rand
 import os
 import vweb
 
-// JWT code in this page is from 
+// JWT code in this page is from
 // https://github.com/vlang/v/blob/master/examples/vweb_orm_jwt/src/auth_services.v
 // credit to https://github.com/enghitalo
 
@@ -20,25 +20,24 @@ struct JwtHeader {
 	typ string
 }
 
-//TODO: refactor to use single JWT interface
+// TODO: refactor to use single JWT interface
 // todo: we can name these better
 pub struct JwtPayload {
-pub mut: 
-	sub         string    // (subject)
-	iss         string    // (issuer)
-	exp         string    // (expiration)
-	iat         time.Time // (issued at)
-	aud         string    // (audience)
-	data		string
+pub mut:
+	sub  string    // (subject)
+	iss  string    // (issuer)
+	exp  string    // (expiration)
+	iat  time.Time // (issued at)
+	aud  string    // (audience)
+	data string
 }
 
 // creates jwt with encoded payload and header
 // DOESN'T handle data encryption, sensitive data should be encrypted
 pub fn create_token(mut jwt_payload JwtPayload) string {
-	
 	$if debug {
-		eprintln(@FN + ':\nCreating JSON web token for payload: $payload')
-	}	
+		eprintln(@FN + ':\nCreating JSON web token for payload: ${payload}')
+	}
 
 	secret := os.getenv('SECRET_KEY')
 	jwt_header := JwtHeader{'HS256', 'JWT'}
@@ -46,17 +45,17 @@ pub fn create_token(mut jwt_payload JwtPayload) string {
 
 	header := base64.url_encode(json.encode(jwt_header).bytes())
 	payload := base64.url_encode(json.encode(jwt_payload).bytes())
-	signature := base64.url_encode(hmac.new(secret.bytes(), '${header}.$payload'.bytes(),
-	sha256.sum, sha256.block_size).bytestr().bytes())
- 
-	return '${header}.${payload}.$signature'
+	signature := base64.url_encode(hmac.new(secret.bytes(), '${header}.${payload}'.bytes(),
+		sha256.sum, sha256.block_size).bytestr().bytes())
+
+	return '${header}.${payload}.${signature}'
 }
 
 // // creates site access token
 // // used to cache site accesses within session
 // // TODO: must expire within session in case access revoked
 // pub fn make_access_token(access Access, user string) string {
-	
+
 // 	$if debug {
 // 		eprintln(@FN + ':\nCreating access cookie for user: $user')
 // 	}	
@@ -79,9 +78,8 @@ pub fn create_token(mut jwt_payload JwtPayload) string {
 // 	return jwt
 // }
 
-// verifies jwt cookie 
+// verifies jwt cookie
 pub fn verify_jwt(token string) bool {
-
 	if token == '' {
 		return false
 	}
@@ -96,7 +94,7 @@ pub fn verify_jwt(token string) bool {
 	return hmac.equal(signature_from_token, signature_mirror)
 }
 
-// verifies jwt cookie 
+// verifies jwt cookie
 // todo: implement assymetric verification
 pub fn verify_jwt_assymetric(token string, pk string) bool {
 	return false
