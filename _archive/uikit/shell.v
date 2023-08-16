@@ -3,12 +3,12 @@ module uikit
 import os
 
 pub struct Shell {
-	pub:
-	logo Image
+pub:
+	logo     Image
 	homepage string
-	navbar Navbar
-	sidebar Sidebar
-	footer Footer
+	navbar   Navbar
+	sidebar  Sidebar
+	footer   Footer
 }
 
 pub struct Image {
@@ -17,7 +17,7 @@ pub struct Image {
 
 fn init() {
 	filename := @FILE
-	println('file: $filename' + @METHOD)
+	println('file: ${filename}' + @METHOD)
 	println('here: ${os.getwd()}')
 	println('here: ${os.args}')
 }

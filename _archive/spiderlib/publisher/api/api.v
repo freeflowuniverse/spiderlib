@@ -15,7 +15,7 @@ const (
 
 pub fn (mut app App) before_request() {
 	$if debug {
-		eprintln('Incoming request to api: $app.req')
+		eprintln('Incoming request to api: ${app.req}')
 	}
 	token := app.get_header('Authorization').trim_string_left('Bearer ')
 
@@ -46,9 +46,9 @@ pub mut:
 
 pub fn run_api() {
 	mut app := new_app()
-	vweb.run(app, port)
+	vweb.run(app, api.port)
 }
 
 pub fn run(app App) {
-	vweb.run(app, port)
+	vweb.run(app, api.port)
 }

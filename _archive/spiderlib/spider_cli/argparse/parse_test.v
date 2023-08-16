@@ -3,7 +3,7 @@ module argparse
 import freeflowuniverse.crystallib.params
 
 struct TestCase {
-	input []string
+	input  []string
 	output params.Params
 }
 
@@ -11,20 +11,18 @@ fn generate_test_cases() []TestCase {
 	return [
 		TestCase{
 			input: ['testvalue']
-			output: params.Params {
-				params: [
-					params.Param {
-						key: 'positional_arg1'
-						value: 'testvalue'
-					}
-				]
+			output: params.Params{
+				params: [params.Param{
+					key: 'positional_arg1'
+					value: 'testvalue'
+				}]
 			}
-		}
+		},
 	]
 }
 
 fn generate_parser() ArgParser {
-	mut parser := ArgParser {
+	mut parser := ArgParser{
 		name: 'testname'
 	}
 
@@ -39,7 +37,7 @@ fn test_parse_positional() {
 	mut value := ''
 
 	// default positional argument
-	argument := Argument {
+	argument := Argument{
 		name: 'positional_argument'
 	}
 
@@ -63,9 +61,9 @@ fn test_parse_positional() {
 	}
 	assert input == []
 	assert value == 'error'
-	
+
 	// positional argument expecting optional argument
-	argument1 := Argument {
+	argument1 := Argument{
 		name: 'positional_argument'
 	}
 
@@ -89,13 +87,9 @@ fn test_parse_positional() {
 	}
 	assert input == []
 	assert value == 'error'
-
-
 
 	// for case in cases {
 	// 	params := parser.parse(case.input)!
 	// 	assert case.output == params
 	// }
-
-	
 }

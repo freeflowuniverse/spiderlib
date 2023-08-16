@@ -5,7 +5,7 @@ import json
 import encoding.base64
 
 pub fn encode(username string, password string) string {
-	return base64.encode('$username:$password'.bytes())
+	return base64.encode('${username}:${password}'.bytes())
 }
 
 pub fn register() ? {

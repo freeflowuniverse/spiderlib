@@ -7,7 +7,7 @@ pub:
 
 pub struct Link {
 pub:
-	icon string
+	icon  string
 	label string
 }
 

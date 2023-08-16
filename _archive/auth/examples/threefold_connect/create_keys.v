@@ -13,8 +13,8 @@ pub fn create_keys() ? {
 	file_path := './keys.toml'
 
 	os.create(file_path) or { panic('Could not create file') }
-	os.write_file(file_path, '[server]\nSERVER_PUBLIC_KEY="$encoded_pk"\nSERVER_SECRET_KEY="$encoded_sk"')?
-	println('Public, Private keys generated at $file_path')
+	os.write_file(file_path, '[server]\nSERVER_PUBLIC_KEY="${encoded_pk}"\nSERVER_SECRET_KEY="${encoded_sk}"')?
+	println('Public, Private keys generated at ${file_path}')
 }
 
 fn main() {

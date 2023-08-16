@@ -1,4 +1,4 @@
-module ssg 
+module ssg
 
 import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.crystallib.texttools
@@ -24,15 +24,13 @@ pub fn new(path string) !StaticSite {
 
 	// is case insensitive
 	//? checks for both summary.md files and links
-	mut index_path := p.file_get('index.md') or { 
-		return error('cannot find index path: ${err}') 
-	}
-	
+	mut index_path := p.file_get('index.md') or { return error('cannot find index path: ${err}') }
+
 	mut doc := markdowndocs.new(path: index_path.path) or {
 		panic('cannot book parse ${index_path} ,${err}')
 	}
 
-	mut site := StaticSite {
+	mut site := StaticSite{
 		name: texttools.name_fix_no_ext(name)
 		path: p
 		index_doc: doc
@@ -40,4 +38,3 @@ pub fn new(path string) !StaticSite {
 
 	return site
 }
-

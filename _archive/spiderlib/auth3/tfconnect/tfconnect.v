@@ -2,7 +2,7 @@ module tfconnect
 
 pub struct TFConnectClient {
 	callback_url string
-	scopes []Scope
+	scopes       []Scope
 }
 
 pub enum Scope {

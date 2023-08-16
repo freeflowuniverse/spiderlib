@@ -1,16 +1,16 @@
 module pages
 
 import freeflowuniverse.spiderlib.uikit.partials { Card }
-import freeflowuniverse.spiderlib.uikit.elements {Button}
+import freeflowuniverse.spiderlib.uikit.elements { Button }
 
 type Main = BlankPage
 
 pub struct Home {
 	Page
 pub:
-	title string
+	title       string
 	description string
-	background string
+	background  string
 	hero_button Button
 }
 
@@ -21,11 +21,11 @@ pub:
 
 pub struct PreviewPage {
 	Page
-	pub:
-	title string
+pub:
+	title       string
 	description string
-	owner string
-	created_at string
+	owner       string
+	created_at  string
 }
 
 pub struct BlankPage {
@@ -44,10 +44,10 @@ pub:
 // 	// return '<main>$blank.content</main>'
 // }
 
-// displays a series of cards 
+// displays a series of cards
 pub struct Cards {
-	pub:
-	content []Card	
+pub:
+	content []Card
 }
 
 // pub fn (cards Cards) html() string {

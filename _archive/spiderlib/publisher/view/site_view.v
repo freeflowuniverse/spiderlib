@@ -21,19 +21,19 @@ pub fn (mut app App) sites() vweb.Result {
 
 	// map sites to card partials
 	cards := sites.map(Card{
-		htmx: htmx.navigate('site/preview/$it.name')
+		htmx: htmx.navigate('site/preview/${it.name}')
 		title: it.title
-		subtitle: '$it.sitetype'
+		subtitle: '${it.sitetype}'
 		description: it.description
 		footer: [
 			LinkButton{
 				label: 'Open Site'
-				src: '/sites/$it.name/index.html'
+				src: '/sites/${it.name}/index.html'
 				target: '_blank'
 			},
 		]
 	})
-	println('card: $cards')
+	println('card: ${cards}')
 
 	cards_page := Cards{
 		content: cards
@@ -69,7 +69,7 @@ pub fn (mut app App) site_view(sitename string) vweb.Result {
 		if err.msg == 'email_required' {
 			return app.redirect('/login')
 		} else {
-			panic('error: $err')
+			panic('error: ${err}')
 		}
 		Site{}
 	}
@@ -77,7 +77,7 @@ pub fn (mut app App) site_view(sitename string) vweb.Result {
 	app.mount_static_folder_at(os.resource_abs_path('testfolder'), '/testurl')
 
 	// return app.redirect('/sites/$sitename/index.html')
-	return app.redirect('/sites/$sitename/index.html')
+	return app.redirect('/sites/${sitename}/index.html')
 }
 
 // checks if user has right to access site
@@ -89,8 +89,8 @@ pub fn (mut app App) site(path string) vweb.Result {
 		return app.ok('')
 	}
 
-	mut response := os.read_file('sites/$path') or {
-		println('fail: $path, $error')
+	mut response := os.read_file('sites/${path}') or {
+		println('fail: ${path}, ${error}')
 		''
 	}
 	app.set_content_type(app.req.header.get(.content_type) or { '' })
@@ -100,7 +100,7 @@ pub fn (mut app App) site(path string) vweb.Result {
 		mut split_resp := response.split('<body>')
 		split_resp[1] = '\n<script src="/static/htmx.min.js"></script>' + split_resp[1]
 		response = split_resp.join('<body>')
-		response = '<div hx-trigger="every 5s" hx-get="/site_log$app.req.url" hx-swap="none" class="m-20"> $response </div>'
+		response = '<div hx-trigger="every 5s" hx-get="/site_log${app.req.url}" hx-swap="none" class="m-20"> ${response} </div>'
 	}
 
 	return app.ok(response)

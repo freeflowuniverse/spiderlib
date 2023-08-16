@@ -1,5 +1,4 @@
 module partials
 
 struct List {
-	
 }

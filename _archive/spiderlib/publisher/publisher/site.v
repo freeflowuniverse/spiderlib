@@ -22,8 +22,8 @@ pub fn (mut p Publisher) site_add(name_ string, type_ SiteType, path_ string) &S
 
 // scans metadata in site's index, adds info to struct
 fn (mut site Site) update_info() {
-	mut site_index := os.read_file('$site.path.path/index.html') or {
-		panic("Failed to read site's index.html: $err")
+	mut site_index := os.read_file('${site.path.path}/index.html') or {
+		panic("Failed to read site's index.html: ${err}")
 	}
 
 	mut parsed := html.parse(site_index)

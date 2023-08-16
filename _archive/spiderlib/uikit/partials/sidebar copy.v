@@ -1,10 +1,10 @@
 module partials
 
 import vweb
-import freeflowuniverse.spiderlib.uikit.elements {Button}
+import freeflowuniverse.spiderlib.uikit.elements { Button }
 
-pub type MenuItem = Dropdown | Action 
-pub type Menu = []MenuItem 
+pub type MenuItem = Action | Dropdown
+pub type Menu = []MenuItem
 
 // pub struct Sidebar {
 // 	pub:
@@ -12,14 +12,11 @@ pub type Menu = []MenuItem
 // 	bottom_menu Menu
 // }
 
-
-
 // sidebar
 pub struct DashboardSidebar {
-	pub:
-	menu   []Button
+pub:
+	menu        []Button
 	bottom_menu Menu
-
 }
 
 pub fn (sidebar DashboardSidebar) render() string {
@@ -34,13 +31,13 @@ pub fn (sidebar DashboardSidebar) render() string {
 type HTMX_fn = fn () vweb.Result
 
 pub struct Action {
-	pub mut:
-	label string
-	icon string
-	route string
-	swap string
-	target string
-	trigger string = "click"
+pub mut:
+	label       string
+	icon        string
+	route       string
+	swap        string
+	target      string
+	trigger     string = 'click'
 	action_type ActionType
 }
 
@@ -53,5 +50,5 @@ pub enum ActionType {
 // 	pub:
 // 	label string
 // 	icon string
-// 	menu []MenuItem 
+// 	menu []MenuItem
 // }

@@ -19,11 +19,10 @@ pub:
 	navitems []NavItem
 }
 
-
 pub struct NavItem {
 pub:
-	url string
-	label string
+	url    string
+	label  string
 	target string
-	htmx htmx.HTMX
+	htmx   htmx.HTMX
 }

@@ -1,8 +1,7 @@
 module partials
 
-import freeflowuniverse.spiderlib.htmx { HTMX}
-import freeflowuniverse.spiderlib.uikit.elements { Button}
-
+import freeflowuniverse.spiderlib.htmx { HTMX }
+import freeflowuniverse.spiderlib.uikit.elements
 
 // pub struct Navbar {
 // pub mut:
@@ -16,15 +15,14 @@ pub struct Navbar {
 }
 
 pub interface INavbar {
-		menu []elements.IButton
-		logo string
-	
+	menu []elements.IButton
+	logo string
 }
 
 pub struct DashboardNavbar {
 pub mut:
-	logo_path string // path of application logo
-	username  string // username for display
+	logo_path  string // path of application logo
+	username   string // username for display
 	login_path string // path to login controller
 }
 
@@ -34,16 +32,16 @@ pub mut:
 // }
 
 pub fn (navbar DashboardNavbar) render() string {
-	current_url:= '/home'
+	current_url := '/home'
 
-	mut user_btn := elements.RoundedButton {}
+	mut user_btn := elements.RoundedButton{}
 
 	// displays login button if there isn't user
 	if navbar.username != '' {
 		user_btn.label = navbar.username
 	} else {
 		user_btn.label = 'Login'
-		user_btn.hx = HTMX {
+		user_btn.hx = HTMX{
 			get: '/login'
 			target: '#dashboard-container'
 		}

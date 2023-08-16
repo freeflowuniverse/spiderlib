@@ -13,7 +13,7 @@ import net.smtp
 import net.http
 import crypto.rand as crypto_rand
 import os
-import freeflowuniverse.spiderlib.publisher.publisher { User }
+import freeflowuniverse.spiderlib.publisher.publisher
 import freeflowuniverse.spiderlib.auth.jwt
 import freeflowuniverse.spiderlib.cookies
 import vweb
@@ -37,9 +37,9 @@ pub fn (mut app App) email_verification(email string) vweb.Result {
 		data: json.encode(data)
 	}
 	response := request.do() or {
-		panic('Could not send verify email request to authorization server: $err')
+		panic('Could not send verify email request to authorization server: ${err}')
 	}
-	println('resp: $response')
+	println('resp: ${response}')
 
 	return app.verify_email(email) // returns email verification view
 }
@@ -104,7 +104,7 @@ pub fn (mut app App) auth_update(email string) vweb.Result {
 	session.start() or { return app.server_error(501) }
 
 	$if debug {
-		eprintln(@FN + ':\nWaiting authentication for email: $email')
+		eprintln(@FN + ':\nWaiting authentication for email: ${email}')
 	}
 
 	// checks if email is authenticated every 2 seconds
@@ -127,10 +127,10 @@ pub fn (mut app App) auth_update(email string) vweb.Result {
 			data: json.encode(data)
 		}
 		response := request.do() or {
-			panic('Could not send verify email request to authorization server: $err')
+			panic('Could not send verify email request to authorization server: ${err}')
 		}
 		if response.body == 'true' && first {
-			sse_data := '{"time": "$time.now().str()", "random_id": "$rand.ulid()"}'
+			sse_data := '{"time": "${time.now().str()}", "random_id": "${rand.ulid()}"}'
 			//? for some reason htmx doesn't pick up first sse
 			msg := SSEMessage{
 				event: 'email_authenticated'
@@ -166,19 +166,15 @@ pub fn (mut app App) callback_tfconnect() vweb.Result {
 		header: header
 		data: json.encode(app.query.clone())
 	}
-	
+
 	// sets app username to received access token issuer
-	response := request.do() or { 
-		panic('Failed to send login request to api: $err') 
-	}
-	payload := jwt.get_payload(response.body) or {
-		panic('Failed to get payload from jwt: $err')
-	}
+	response := request.do() or { panic('Failed to send login request to api: ${err}') }
+	payload := jwt.get_payload(response.body) or { panic('Failed to get payload from jwt: ${err}') }
 	app.username = payload.iss
 
 	// secure approach to keeping session inspired from:
 	// https://stackoverflow.com/questions/244882/what-is-the-best-way-to-implement-remember-me-for-a-website
-	cookie := cookies.LoginCookie {
+	cookie := cookies.LoginCookie{
 		identifier: payload.sub
 		token: payload.data
 	}

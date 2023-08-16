@@ -4,12 +4,12 @@ import freeflowuniverse.spiderlib.html
 
 pub struct DashboardCard {
 	html.Div
-	pub:
-	heading string
+pub:
+	heading     string
 	description string
-	button html.Button
-	delta f64
-	content CardContent = EmptyContent{}
+	button      html.Button
+	delta       f64
+	content     CardContent = EmptyContent{}
 }
 
 pub fn (card DashboardCard) render_content() string {
@@ -30,26 +30,26 @@ pub fn (card DashboardCard) render_content() string {
 pub type CardContent = CardList | EmptyContent | Table
 
 // default content for card
-pub struct EmptyContent{}
+pub struct EmptyContent {}
 
 pub struct CardList {
-	pub:
+pub:
 	list []ListItem
 }
 
 pub struct ListItem {
-	pub:
-	logo string
+pub:
+	logo    string
 	heading string
-	time string
-	tag string
+	time    string
+	tag     string
 	content string
 }
 
 pub struct Table {
 pub:
 	headers []string
-	rows [][]string
+	rows    [][]string
 }
-// pub fn (card Card)
 
+// pub fn (card Card)

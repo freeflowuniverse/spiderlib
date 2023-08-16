@@ -1,7 +1,7 @@
 module partials
 
 pub struct VerifyEmail {
-	pub:
+pub:
 	email string
 }
 

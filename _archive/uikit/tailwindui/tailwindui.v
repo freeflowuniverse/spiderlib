@@ -1,10 +1,9 @@
 module tailwindui
 
 import freeflowuniverse.spiderlib.uikit
-
 import vweb
 
-pub struct TailwindUI{
+pub struct TailwindUI {
 	vweb.Context
 }
 
@@ -18,7 +17,7 @@ pub fn (mut app TailwindUI) index() vweb.Result {
 	return $vweb.html()
 }
 
-[GET; '/shells/shell']
+['/shells/shell'; GET]
 pub fn (mut app TailwindUI) shells_shell() vweb.Result {
 	shell := uikit.Shell{}
 	return $vweb.html()
