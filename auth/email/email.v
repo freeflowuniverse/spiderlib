@@ -5,29 +5,40 @@ import net.smtp
 import crypto.rand
 import log
 
+// default verification email if another one isn't provided
+const default_mail = VerificationEmail {
+	from: 'email_authenticator@spiderlib.ff'
+	subject: 'Verify your email'
+	body: 'Please verify your email by clicking the link below'
+}
+
+// Creates and updates, authenticates email authentication sessions
+[noinit]
+struct Authenticator {
+pub:
+	client     smtp.Client       [required] // smtp client which will be used to send email
+	mail      VerificationEmail = email.default_mail // the mail to be sent with verification. Link is added to the end of the body.
+	auth_route string            [required] // route which will handle the authentication link click
+mut: 
+	sessions map[string]AuthSession // map of active authentication sessions, indexed by email
+	logger   &log.Logger
+}
+
+// [params]
+// struct AuthenticatorConfig {
+// 	client smtp.Client [required]
+
+// }
+
+pub fn new(config Authenticator) Authenticator {
+	return config
+}
+
 pub struct VerificationEmail {
 pub:
 	from    string
 	subject string
 	body    string
-}
-
-// default verification email if another one isn't provided
-const default_mail = VerificationEmail{
-	subject: 'Verify your email'
-	body: 'Please verify your email by clicking the link below'
-}
-
-// Creates, manages and deals email auth sessions
-// sessions are indexed by email address
-pub struct Authenticator {
-pub:
-	client     smtp.Client       [required] // smtp client which will be used to send email
-	email      VerificationEmail = email.default_mail // the mail to be sent with verification. Link is added to the end of the body.
-	auth_route string            [required]
-mut: // route which will handle the authentication link click
-	sessions map[string]AuthSession // map of active authentication sessions
-	logger   &log.Logger
 }
 
 // Is initialized when an auth link is sent
@@ -62,13 +73,13 @@ pub fn (mut auth Authenticator) send_verification_email(email string) AuthSessio
 	auth.sessions[email].timeout = time.now().add_seconds(180)
 	auth.sessions[email].attempts_left = auth.sessions[email].attempts_left - 1
 
-	mut client := smtp.new_client(auth.client) or { panic('Error creating smtp client: ${err}') }
+	mut client := smtp.new_client(auth.client) 
 	mail := smtp.Mail{
 		to: email
-		from: auth.email.from
-		subject: auth.email.subject
+		from: auth.mail.from
+		subject: auth.mail.subject
 		body_type: .html
-		body: '${auth.email.body}\n<a href="${auth.auth_route}/${email}/${auth_code.hex()}">Click to authenticate</a>'
+		body: '${auth.mail.body}\n<a href="${auth.auth_route}/${email}/${auth_code.hex()}">Click to authenticate</a>'
 	}
 	// send email with link in body
 	client.send(mail) or { panic('Error resolving email address') }

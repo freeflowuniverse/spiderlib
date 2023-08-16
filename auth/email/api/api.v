@@ -1,11 +1,11 @@
 module main
 
 import vweb
-import time { Time }
+import time
 import os
 import json
 import x.json2
-import freeflowuniverse.spiderlib.api {FunctionCall, FunctionResponse}
+import freeflowuniverse.spiderlib.api { FunctionCall, FunctionResponse }
 import freeflowuniverse.spiderlib.auth.email { Authenticator }
 
 const (
@@ -25,7 +25,7 @@ const (
 struct App {
 	vweb.Context
 mut:
-	channel chan &FunctionCall [vweb_global]
+	channel          chan &FunctionCall     [vweb_global]
 	response_channel chan &FunctionResponse [vweb_global]
 }
 
@@ -42,7 +42,6 @@ pub fn (mut app App) index() vweb.Result {
 }
 
 pub fn main() {
-
 	mut authenticator := Authenticator{}
 	mut api := new_app()
 	go vweb.run(api, port)
@@ -52,42 +51,41 @@ pub fn main() {
 		mut response := ''
 
 		match call.function {
-			// 'send_link' { 
+			// 'send_link' {
 			// 	email_address := call.payload
 			// 	sent := authenticator.send_link(email_address) or {
 			// 		panic(err)
 			// 	}
-
 			// 	if sent {
 			// 		response = 'email_sent'
 			// 	} else {}
 			// }
-			// 'verify_email' { 
+			// 'verify_email' {
 			// 	token := json.decode(Token, call.payload)!
 			// 	verified := publisher.get_sites(user) or {
 			// 		panic(err)
 			// 	}
 			// 	response = json.encode(sites)
 			// }
-			'email_verification' { 
+			'email_verification' {
 				email := call.payload
 				auth_session := authenticator.email_verification(email)
 				response = json.encode(auth_session)
 			}
-			'is_authenticated' { 
+			'is_authenticated' {
 				email := call.payload
 				is_authenticated := authenticator.is_authenticated(email)
 				response = json.encode(is_authenticated)
 			}
-			'authenticate' { 
-				data_ := json2.raw_decode(call.payload) or {panic(err)}
-				email 	:= data_.as_map()["email"]!.str()
-				cypher 	:= data_.as_map()["cypher"]!.str()
+			'authenticate' {
+				data_ := json2.raw_decode(call.payload) or { panic(err) }
+				email := data_.as_map()['email']!.str()
+				cypher := data_.as_map()['cypher']!.str()
 				auth_session := authenticator.authenticate(email, cypher)
 				response = json.encode(auth_session)
 			}
 			else {}
-		} 
+		}
 		api.response_channel <- &FunctionResponse{
 			thread_id: call.thread_id
 			function: call.function
@@ -95,4 +93,3 @@ pub fn main() {
 		}
 	}
 }
-
