@@ -4,9 +4,9 @@ import freeflowuniverse.spiderlib.uikit.partials
 import vweb
 
 pub struct AppShell {
-	pub:
-	navbar partials.INavbar
+pub:
+	navbar  partials.INavbar
 	sidebar partials.ISidebar
-	pub mut:
+pub mut:
 	page string
 }

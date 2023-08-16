@@ -1,2 +1,7 @@
 *.env
 *.dSYM
+docs/
+stylish_form_example
+memory_form_example
+simple_form_example
+static/

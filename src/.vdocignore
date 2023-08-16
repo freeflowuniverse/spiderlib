@@ -1,0 +1,14 @@
+_archive/auth
+_archive/spiderlib
+_archive/*
+auth
+spider
+spider/example
+payments/examples
+auth/examples
+auth/src
+stellarclient
+spider/templates
+spider/example
+example/
+examples/

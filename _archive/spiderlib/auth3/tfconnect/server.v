@@ -4,17 +4,16 @@ import libsodium
 import net.http
 import x.json2
 import json
-
 import encoding.base64
 
 struct ResultData {
-    double_name    	string
-    state    		string
-	nonce	    	string
-	ciphertext    	string
+	double_name string
+	state       string
+	nonce       string
+	ciphertext  string
 }
 
-pub fn verify(server_public_key string, server_private_key string, req_data string)! {
+pub fn verify(server_public_key string, server_private_key string, req_data string) ! {
 	server_pk_decoded_32 := [32]u8{}
 	server_sk_decoded_64 := [64]u8{}
 
@@ -23,8 +22,8 @@ pub fn verify(server_public_key string, server_private_key string, req_data stri
 
 	request_data := json2.raw_decode(req_data)!
 	data := SignedAttempt{
-		signed_attempt: request_data.as_map()['signed_attempt']!.str(), 
-		double_name: request_data.as_map()['double_name']!.str(),
+		signed_attempt: request_data.as_map()['signed_attempt']!.str()
+		double_name: request_data.as_map()['double_name']!.str()
 	}
 
 	// if data.double_name == ""{
@@ -36,31 +35,26 @@ pub fn verify(server_public_key string, server_private_key string, req_data stri
 	// 	server.abort(400, "Error getting user pub key")
 	// }
 
-	body 			:= json2.raw_decode(res.body)!
-	user_pk 		:= body.as_map()['publicKey']!.str()
-	user_pk_buff 	:= [32]u8{}
-	_ 				:= base64.decode_in_buffer(&user_pk, &user_pk_buff)
-	signed_data 	:= data.signed_attempt
+	body := json2.raw_decode(res.body)!
+	user_pk := body.as_map()['publicKey']!.str()
+	user_pk_buff := [32]u8{}
+	_ := base64.decode_in_buffer(&user_pk, &user_pk_buff)
+	signed_data := data.signed_attempt
 
 	// This is just workaround becouse we need to access pub key inside verify key and we can not do it while this struct is private.
-	signing_key 	:= libsodium.new_signing_key(user_pk_buff, [32]u8{})
-	verify_key 		:= signing_key.verify_key
-	verifed 		:= verify_key.verify(base64.decode(signed_data))
+	signing_key := libsodium.new_signing_key(user_pk_buff, [32]u8{})
+	verify_key := signing_key.verify_key
+	verifed := verify_key.verify(base64.decode(signed_data))
 
 	// if verifed == false{
 	// 	server.abort(400, data_verfication_field)
 	// }
 
-	verified_data 	:= base64.decode(signed_data)
-	data_obj 		:= json2.raw_decode(verified_data[64..].bytestr())!
-	data_			:= json2.raw_decode(data_obj.as_map()['data']!.str())!
+	verified_data := base64.decode(signed_data)
+	data_obj := json2.raw_decode(verified_data[64..].bytestr())!
+	data_ := json2.raw_decode(data_obj.as_map()['data']!.str())!
 
-	res_data_struct := ResultData{
-		data_obj.as_map()['doubleName']!.str(), 
-		data_obj.as_map()['signedState']!.str(), 
-		data_.as_map()['nonce']!.str(), 
-		data_.as_map()['ciphertext']!.str()
-	}
+	res_data_struct := ResultData{data_obj.as_map()['doubleName']!.str(), data_obj.as_map()['signedState']!.str(), data_.as_map()['nonce']!.str(), data_.as_map()['ciphertext']!.str()}
 
 	// if res_data_struct.double_name == ""{
 	// 	server.abort(400, not_contain_doublename)
@@ -74,13 +68,13 @@ pub fn verify(server_public_key string, server_private_key string, req_data stri
 	// 	server.abort(400, username_mismatch)
 	// }
 
-	nonce 		:= base64.decode(res_data_struct.nonce)
-	ciphertext 	:= base64.decode(res_data_struct.ciphertext) 
+	nonce := base64.decode(res_data_struct.nonce)
+	ciphertext := base64.decode(res_data_struct.ciphertext)
 
 	nonce_bff := [24]u8{}
 	unsafe { vmemcpy(&nonce_bff[0], nonce.data, 24) }
 
-	user_curve_pk 	:= []u8{len: 32}
+	user_curve_pk := []u8{len: 32}
 	server_curve_sk := []u8{len: 32}
 	server_curve_pk := []u8{len: 32}
 
@@ -107,39 +101,39 @@ pub fn verify(server_public_key string, server_private_key string, req_data stri
 	// 	server.abort(400, data_decrypting_error)
 	// }
 
-    sei 		:= response.as_map()["sei"]!
-	verify_sei 	:= request_to_verify_sei(sei.str())!
+	sei := response.as_map()['sei']!
+	verify_sei := request_to_verify_sei(sei.str())!
 
 	// if verify_sei.status_code != 200{
-    //     server.abort(400, email_not_verified)
+	//     server.abort(400, email_not_verified)
 	// }
-
 }
 
-pub fn request_to_get_pub_key(username string)! http.Response{
+pub fn request_to_get_pub_key(username string) !http.Response {
 	mut header := http.new_header_from_map({
 		http.CommonHeader.content_type: 'application/json'
 	})
 	config := http.FetchConfig{
-		header: header,
+		header: header
 		method: http.Method.get
-
 	}
-	url := "https://login.threefold.me/api/users/$username"
+	url := 'https://login.threefold.me/api/users/${username}'
 	resp := http.fetch(http.FetchConfig{ ...config, url: url })!
 	return resp
 }
 
-pub fn request_to_verify_sei(sei string)! http.Response{
+pub fn request_to_verify_sei(sei string) !http.Response {
 	header := http.new_header_from_map({
-		http.CommonHeader.content_type: 'application/json',
+		http.CommonHeader.content_type: 'application/json'
 	})
 
 	request := http.Request{
-		url: "https://openkyc.live/verification/verify-sei"
+		url: 'https://openkyc.live/verification/verify-sei'
 		method: http.Method.post
-		header: header,
-		data: json.encode({"signedEmailIdentifier": sei}),
+		header: header
+		data: json.encode({
+			'signedEmailIdentifier': sei
+		})
 	}
 	result := request.do()!
 	return result

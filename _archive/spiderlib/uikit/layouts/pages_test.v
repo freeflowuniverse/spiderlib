@@ -1,7 +1,7 @@
 module layouts
 
 fn test_home() {
-	home_page := Home {
+	home_page := Home{
 		title: 'Threefold Ventures'
 		description: 'Threefold Ventures'
 		background: './image'
@@ -11,5 +11,4 @@ fn test_home() {
 		// }
 	}
 	println(home_page.html())
-
 }

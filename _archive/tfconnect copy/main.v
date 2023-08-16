@@ -21,7 +21,7 @@ pub fn (mut app TFConnectApp) index() vweb.Result {
 pub fn (mut app TFConnectApp) with_auth() bool {
 	// app.user = app.service_get_user() or {
 	// 	app.redirect('/auth/login')
-    // 	return false
+	// 	return false
 	// }
 	app.user = 'test'
 	return true
@@ -35,16 +35,16 @@ pub fn (mut app TFConnectApp) service_get_user() !string {
 pub fn (mut app TFConnectApp) user() vweb.Result {
 	user := app.user
 	println('here: ${user}')
-    return app.json(json.encode(user))
+	return app.json(json.encode(user))
 }
 
 pub fn (mut app TFConnectApp) not_found() vweb.Result {
-    app.set_status(404, 'Not Found')
-    return app.html('<h1>Page not found</h1>')
+	app.set_status(404, 'Not Found')
+	return app.html('<h1>Page not found</h1>')
 }
 
 fn main() {
-	do() or { panic('Failed to run example:\n$err') }
+	do() or { panic('Failed to run example:\n${err}') }
 }
 
 fn do() ! {
@@ -54,10 +54,10 @@ fn do() ! {
 		success_url: '/user'
 	)!
 
-    mut app := &TFConnectApp{
-        controllers: [
-            vweb.controller('/auth', &auth_controller),
-        ]
-    }
-    vweb.run(app, 8080)
+	mut app := &TFConnectApp{
+		controllers: [
+			vweb.controller('/auth', &auth_controller),
+		]
+	}
+	vweb.run(app, 8080)
 }

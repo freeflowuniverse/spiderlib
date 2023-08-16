@@ -1,7 +1,7 @@
 module flowbite
 
-import freeflowuniverse.spiderlib.htmx { HTMX}
-import freeflowuniverse.spiderlib.uikit.elements { Button}
+import freeflowuniverse.spiderlib.htmx
+import freeflowuniverse.spiderlib.uikit.elements { Button }
 
 pub struct Navbar {
 pub mut:

@@ -9,14 +9,14 @@ mut:
 }
 
 struct Argument {
-	name string
-	labels []string
-	typ int
-	required bool
-	choices []string
+	name        string
+	labels      []string
+	typ         int
+	required    bool
+	choices     []string
 	default_val string
-	nargs u8 // character
-	positional bool
+	nargs       u8 // character
+	positional  bool
 }
 
 fn (mut parser ArgParser) add_argument(arg Argument) {

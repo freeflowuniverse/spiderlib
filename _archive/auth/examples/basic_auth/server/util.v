@@ -23,7 +23,7 @@ const (
 )
 
 pub fn encode(username string, password string) string {
-	return base64.encode('$username:$password'.bytes())
+	return base64.encode('${username}:${password}'.bytes())
 }
 
 pub fn decode(signature string) string {
@@ -38,8 +38,8 @@ pub fn decode(signature string) string {
 pub fn basic_auth(users map[string]string, mut app App) ? {
 	mut processed_users := map[string]string{}
 	for u, p in users {
-		encodedauth := base64.encode('$u:$p'.bytes())
-		processed_users['Basic $encodedauth'] = u
+		encodedauth := base64.encode('${u}:${p}'.bytes())
+		processed_users['Basic ${encodedauth}'] = u
 	}
 	headers_keys := app.Context.req.header.keys()
 	mut value := ''

@@ -4,8 +4,7 @@ module uikit
 // holds metadata and scripts to be imported
 pub struct Index {
 pub:
-	scripts []string
+	scripts     []string
 	stylesheets []string
-	shell Shell
+	shell       Shell
 }
-

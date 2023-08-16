@@ -9,7 +9,7 @@ import os
 import v.ast
 import crypto.rand as crypto_rand
 import sqlite
-import freeflowuniverse.spiderlib.publisher.publisher { Access }
+import freeflowuniverse.spiderlib.publisher.publisher
 import freeflowuniverse.crystallib.pathlib
 import freeflowuniverse.spiderlib.auth.jwt
 

@@ -5,7 +5,7 @@ import freeflowuniverse.spiderlib.uikit.elements
 
 pub struct Card {
 	html.Div
-	pub:
+pub:
 	title       string
 	subtitle    string
 	description string
@@ -13,7 +13,7 @@ pub struct Card {
 
 pub struct Card2 {
 	html.Div
-	pub:
+pub:
 	title       string
 	subtitle    string
 	description string
@@ -21,8 +21,8 @@ pub struct Card2 {
 
 pub interface ICard {
 	html.IElement
-	title       string
-	subtitle    string
+	title string
+	subtitle string
 	description string
 }
 
@@ -32,7 +32,6 @@ pub fn (card Card) html() string {
 	return $tmpl('./templates/card.html')
 	// return '<main>$blank.content</main>'
 }
-
 
 // // Flowbite Dashboard Card
 // pub struct FBDashboardCard {

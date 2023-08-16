@@ -5,10 +5,10 @@ import freeflowuniverse.spiderlib.htmx { HTMX }
 // pub type Button = IconButton | RoundedButton | LinkButton
 
 pub struct Button {
-	pub:
-	hx HTMX
+pub:
+	hx    HTMX
 	label string
-	icon string
+	icon  string
 }
 
 pub interface IButton {
@@ -22,7 +22,7 @@ pub struct IconButton {
 pub:
 	label string
 	icon  string
-	hx    htmx.HTMX
+	hx    HTMX
 }
 
 pub fn (button IconButton) html() string {
@@ -32,7 +32,7 @@ pub fn (button IconButton) html() string {
 pub struct RoundedButton {
 pub mut:
 	label string
-	hx htmx.HTMX
+	hx    HTMX
 }
 
 pub fn (button RoundedButton) html() string {
@@ -42,10 +42,10 @@ pub fn (button RoundedButton) html() string {
 // Anchor tag that is styled like a button
 pub struct LinkButton {
 pub mut:
-	label string
-	src string
+	label  string
+	src    string
 	target string
-	hx    htmx.HTMX
+	hx     HTMX
 }
 
 pub fn (button LinkButton) html() string {

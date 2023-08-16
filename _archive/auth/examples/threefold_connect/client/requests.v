@@ -39,7 +39,7 @@ fn (mut clinet ClientApp) login() ?vweb.Result {
 		'redirecturl': '/callback'
 		'publickey':   base64.encode(server_curve_pk[..])
 	}
-	clinet.redirect('$redirect_url?${url_encode(params)}')
+	clinet.redirect('${redirect_url}?${url_encode(params)}')
 	return clinet.text('Login Page...')
 }
 
@@ -54,5 +54,5 @@ fn (mut clinet ClientApp) callback() ?vweb.Result {
 
 	initial_data := data.load(query)?
 	res := request_to_server_to_verify(initial_data)?
-	return clinet.text('$res.body')
+	return clinet.text('${res.body}')
 }

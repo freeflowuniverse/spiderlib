@@ -5,12 +5,12 @@ import freeflowuniverse.spiderlib.uikit.elements { IButton }
 
 // sidebar
 pub interface ISidebar {
-	menu   []IButton
+	menu []IButton
 	bottom_menu []IButton
 }
 
 pub struct Sidebar {
-	pub:
-	menu   []IButton
+pub:
+	menu        []IButton
 	bottom_menu []IButton
 }

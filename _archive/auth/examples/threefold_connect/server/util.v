@@ -41,7 +41,7 @@ pub fn request_to_get_pub_key(username string) ?http.Response {
 		header: header
 		method: http.Method.get
 	}
-	url := 'https://login.threefold.me/api/users/$username'
+	url := 'https://login.threefold.me/api/users/${username}'
 	resp := http.fetch(http.FetchConfig{ ...config, url: url })?
 	return resp
 }

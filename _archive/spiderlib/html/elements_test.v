@@ -3,23 +3,21 @@ module uikit
 import freeflowuniverse.crystallib.pathlib
 
 fn test_button_html() {
-	button := Button {
+	button := Button{
 		label: 'Test Button'
 	}
 
-	correct_answer := 
-'<button>
+	correct_answer := '<button>
     Test Button
 </button>'
 
 	assert button.html().trim_right('\n') == correct_answer
-	
-	correct_answer2 := 
-'<button>
+
+	correct_answer2 := '<button>
     Test Button
 </button>'
 
-	button2 := Button {
+	button2 := Button{
 		label: 'Test Button'
 		icon: pathlib.get('../../icons/ecommerce.html')
 	}

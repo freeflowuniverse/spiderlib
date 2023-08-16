@@ -2,7 +2,6 @@ module argparse
 
 // Parser factory that adds arguments automaticaly given a generic type.
 fn new[T]() ArgParser {
-
 	// create parser
 	mut parser := ArgParser{}
 

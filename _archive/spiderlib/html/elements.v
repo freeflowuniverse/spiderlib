@@ -8,8 +8,8 @@ import net.urllib { URL }
 type Source = Path | URL
 
 struct Element {
-	pub:
-	hx HTMX
+pub:
+	hx      HTMX
 	content string
 }
 
@@ -27,7 +27,6 @@ pub fn (button Button) html() string {
 }
 
 struct SVG {
-
 }
 
 struct Img {
@@ -37,11 +36,10 @@ struct Img {
 
 struct Anchor {
 	label string
-	href string
+	href  string
 }
 
 struct Heading {
-
 }
 
 pub interface IElement {
@@ -53,7 +51,6 @@ pub struct Button {
 }
 
 struct Paragraph {
-
 }
 
 // struct Form {
@@ -61,22 +58,17 @@ struct Paragraph {
 // }
 
 struct Input {
-
 }
 
 struct Details {
-
 }
 
 struct Table {
-
 }
 
 struct Div {
 	Element
-
 }
 
 struct Span {
-
 }

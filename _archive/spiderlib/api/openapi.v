@@ -7,60 +7,78 @@ enum OpenAPIVersion {
 }
 
 struct OpenAPI {
-	pub:
-	version OpenAPIVersion
-	info OpenAPIInfo
-	servers []string
+pub:
+	version    OpenAPIVersion
+	info       OpenAPIInfo
+	servers    []string
 	components [][]OpenAPIComponent
-	paths []OpenAPIPath
+	paths      []OpenAPIPath
 }
 
 struct OpenAPIInfo {
-	pub:
-	version string
-	title string
-	description string 
+pub:
+	version     string
+	title       string
+	description string
 }
 
-struct Schema {} // Reusable schemas (data models)
-struct Parameter{} // Reusable path, query, header and cookie parameters
-struct SecurityScheme{} //Security scheme definitions (see Authentication)
-struct RequestBody{} //Reusable request bodies
-struct Response{} // Reusable responses, such as 401 Unauthorized or 400 Bad Request
-struct Header{} // Reusable response headers
-struct Example{} // Reusable examples
-struct Link{} // Reusable links
-struct Callback{} // Reusable callbacks
+struct Schema {}
 
-type OpenAPIComponent = Schema |
-	Parameter |
-	SecurityScheme |
-	RequestBody |
-	Response |
-	Header |
-	Example |
-	Link |
-	Callback
+// Reusable schemas (data models)
+struct Parameter {}
+
+// Reusable path, query, header and cookie parameters
+struct SecurityScheme {}
+
+// Security scheme definitions (see Authentication)
+struct RequestBody {}
+
+// Reusable request bodies
+struct Response {}
+
+// Reusable responses, such as 401 Unauthorized or 400 Bad Request
+struct Header {}
+
+// Reusable response headers
+struct Example {}
+
+// Reusable examples
+struct Link {}
+
+// Reusable links
+struct Callback {}
+
+// Reusable callbacks
+
+type OpenAPIComponent = Callback
+	| Example
+	| Header
+	| Link
+	| Parameter
+	| RequestBody
+	| Response
+	| Schema
+	| SecurityScheme
 
 struct OpenAPIPath {
-	path string
+	path   string
 	method http.Method
 }
 
 struct OpenAPIArgs {
-	title string
+	title       string
 	description string
-	apipath string [required]
+	apipath     string [required]
 }
 
 pub fn new(args OpenAPIArgs) OpenAPI {
-	mut api := OpenAPI {}
+	mut api := OpenAPI{}
 	return api
 }
 
 struct GenerateArgs {
 	exportpath string
-	overwrite bool = true
+	overwrite  bool = true
 }
 
 pub fn (api OpenAPI) generate_definition(args GenerateArgs) {
