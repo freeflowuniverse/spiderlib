@@ -25,4 +25,4 @@
 - more productivity for creating dynamic websites
 - standardise the way how we publish info (will be integrated part of 3bot)
 
-  
+[Manual](https://freeflowuniverse.github.io/spiderlib/)
