@@ -35,13 +35,13 @@ pub fn new_controller(params ControllerParams) Controller {
 
 // route responsible for verifying email, email form should be posted here
 [POST]
-pub fn (mut app Controller) send_verification_email() vweb.Result {
-	address := app.req.data
+pub fn (mut app Controller) send_verification_mail() !vweb.Result {
+	config := json.decode(SendMailConfig, app.req.data)!
 	app.logger.debug('${email.agent}: received request to verify email')
 	lock app.authenticator {
-		session := app.authenticator.email_verification(address)
+		app.authenticator.send_verification_mail(config) or {panic(err)}
 		app.logger.debug('${email.agent}: Sent verification email')
-		return app.json(session)
+		return app.ok('')
 	}
 	app.logger.debug('${email.agent}: sent verification email')
 	return app.html('timeout')
@@ -54,10 +54,10 @@ pub fn (mut app Controller) is_verified() vweb.Result {
 	// checks if email verified every 2 seconds
 	for {
 		lock app.authenticator {
-			if app.authenticator.is_authenticated(address) {
+			if app.authenticator.is_authenticated(address) or{ panic(err)} {
 				// returns success message once verified
 				app.logger.debug('${email.agent}: verified email')
-				return app.json(app.authenticator.sessions[address])
+				return app.ok('ok')
 			}
 		}
 		time.sleep(2 * time.second)
@@ -65,28 +65,28 @@ pub fn (mut app Controller) is_verified() vweb.Result {
 	return app.html('timeout')
 }
 
-// route responsible for verifying email, email form should be posted here
-[POST]
-pub fn (mut app Controller) verify() vweb.Result {
-	address := app.req.data
-	app.logger.debug('${email.agent}: received request to verify email')
-	lock app.authenticator {
-		_ := app.authenticator.email_verification(address)
-	}
-	app.logger.debug('${email.agent}: sent verification email')
-	// checks if email verified every 2 seconds
-	for {
-		lock app.authenticator {
-			if app.authenticator.is_authenticated(address) {
-				// returns success message once verified
-				app.logger.debug('${email.agent}: verified email')
-				return app.json(app.authenticator.sessions[address])
-			}
-		}
-		time.sleep(2 * time.second)
-	}
-	return app.html('timeout')
-}
+// // route responsible for verifying email, email form should be posted here
+// [POST]
+// pub fn (mut app Controller) verify() vweb.Result {
+// 	address := app.req.data
+// 	app.logger.debug('${email.agent}: received request to verify email')
+// 	lock app.authenticator {
+// 		_ := app.authenticator.email_verification(address) or {panic(err)}
+// 	}
+// 	app.logger.debug('${email.agent}: sent verification email')
+// 	// checks if email verified every 2 seconds
+// 	for {
+// 		lock app.authenticator {
+// 			if app.authenticator.is_authenticated(address) {
+// 				// returns success message once verified
+// 				app.logger.debug('${email.agent}: verified email')
+// 				return app.json(app.authenticator.sessions[address])
+// 			}
+// 		}
+// 		time.sleep(2 * time.second)
+// 	}
+// 	return app.html('timeout')
+// }
 
 pub struct AuthAttempt {
 pub:
@@ -100,7 +100,10 @@ pub fn (mut app Controller) authenticate() !vweb.Result {
 	attempt := json.decode(AuthAttempt, app.req.data)!
 	mut result := AttemptResult{}
 	lock app.authenticator {
-		result = app.authenticator.authenticate(attempt.address, attempt.cypher)!
+		app.authenticator.authenticate(attempt.address, attempt.cypher) or {
+			app.set_status(401, err.msg)
+			return app.text('Failed to authenticate')
+		}
 	}
-	return app.json(result)
+	return app.ok('Authentication successful')
 }
