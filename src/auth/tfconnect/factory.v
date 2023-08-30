@@ -6,7 +6,6 @@ import toml
 [params]
 pub struct TFConnectConfig {
 pub:
-	app_id   string   [required] // host of the application (ex: http://localhost:8080)
 	callback string   // by default, calls back to host url
 	keypair  ?Keypair // keypair for creating TFConnect url and decrypting callback data
 	scopes   Scopes
@@ -23,7 +22,6 @@ pub fn new(config TFConnectConfig) !TFConnect {
 	_ := base64.decode_in_buffer(&keypair.private_key, sk_decoded_64.data)
 
 	return TFConnect{
-		app_id: config.app_id
 		callback: config.callback
 		pk_decoded: pk_decoded_32
 		sk_decoded: sk_decoded_64

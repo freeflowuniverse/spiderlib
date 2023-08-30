@@ -1,6 +1,5 @@
 module email
 
-import db.sqlite
 import log
 
 // Creates and updates, authenticates email authentication sessions
@@ -11,4 +10,5 @@ mut:
 	create_auth_session(AuthSession)!
 	update_auth_session(AuthSession)!
 	delete_auth_session(string)!
+	set_session_authenticated(string)!
 }

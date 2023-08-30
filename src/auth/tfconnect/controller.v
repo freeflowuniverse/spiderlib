@@ -44,7 +44,7 @@ pub fn (mut app TFConnectController) login() !vweb.Result {
 pub fn (mut app TFConnectController) callback() !vweb.Result {
 	query := app.query.clone()
 	signed_attempt := load_signed_attempt(query)!
-	res := app.tfconnect.verify(signed_attempt)!
+	_ := app.tfconnect.verify(signed_attempt)!
 	app.redirect(app.success_url)
 	return app.ok('')
 }

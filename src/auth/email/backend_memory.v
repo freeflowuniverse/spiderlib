@@ -29,6 +29,10 @@ fn (mut backend MemoryBackend) update_auth_session(session AuthSession) ! {
 	backend.sessions[session.email] = session
 }
 
+fn (mut backend MemoryBackend) set_session_authenticated(email string) ! {
+	backend.sessions[email].authenticated = true
+}
+
 fn (mut backend MemoryBackend) delete_auth_session(email string) ! {
 	backend.sessions.delete(email)
 }

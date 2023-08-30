@@ -7,7 +7,7 @@ import log
 
 // Creates and updates, authenticates email authentication sessions
 [noinit]
-struct Authenticator {
+pub struct Authenticator {
 mut: // route which will handle the authentication link click
 	backend IBackend
 	logger   &log.Logger = &log.Logger(&log.Log{
@@ -27,7 +27,7 @@ pub mut:
 }
 
 [params]
-struct AuthenticatorConfig {
+pub struct AuthenticatorConfig {
 	backend IBackend [required]
 	logger &log.Logger = &log.Logger(&log.Log{
 		level: .info
@@ -44,7 +44,7 @@ pub fn new(config AuthenticatorConfig) Authenticator {
 [params]
 pub struct SendMailConfig {
 	email string
-	mail VerificationMail [required]
+	mail VerificationMail
 	smtp SmtpConfig [required]
 	link string [required]
 }
@@ -64,11 +64,17 @@ pub struct SmtpConfig {
 	password string
 }
 
+pub fn (mut auth Authenticator) email_authentication(config SendMailConfig) ! {
+	auth.send_verification_mail(config)!
+	auth.await_authentication(email: config.email)!
+}
+
 // sends mail with verification link
 pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! {
 	// create auth session
 	auth_code := rand.bytes(64) or { panic(err) }
 	auth.backend.create_auth_session(
+		email: config.email
 		auth_code: auth_code.hex()
 		timeout: time.now().add_seconds(180)
 	)!
@@ -91,8 +97,8 @@ pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! 
 		password: config.smtp.password
 	)!
 	client.send(mail) or { panic('Error resolving email address') }
+	auth.logger.debug('Email Authenticator: Sent authentication email to ${config.email}')
 	client.quit() or { panic('Could not close connection to server') }
-	auth.logger.debug(@FN + ':\nSent verification email to: ${config.email}')
 }
 
 // result of an authentication attempt
@@ -132,12 +138,10 @@ pub fn (mut auth Authenticator) authenticate(email string, cypher string) ! {
 
 	// authenticates if cypher in link matches authcode
 	if cypher == session.auth_code {
-		auth.logger.debug(@FN + ':\nUser authenticated email: ${email}')
-		updated_session := AuthSession{
-			...session
-			authenticated: true
+		auth.logger.debug('Email Authenticator: email ${email} authenticated')
+		auth.backend.set_session_authenticated(email) or {
+			panic(err)
 		}
-		auth.backend.update_auth_session(updated_session)!
 	} else {
 		updated_session := AuthSession{
 			...session
@@ -148,6 +152,21 @@ pub fn (mut auth Authenticator) authenticate(email string, cypher string) ! {
 			reason: .cypher_mismatch
 		}
 	}
+}
+
+pub struct AwaitAuthParams {
+	email string [required]
+	timeout time.Duration = 3 * time.minute
+}
+
+// function to check if an email is authenticated
+pub fn (mut auth Authenticator) await_authentication(params AwaitAuthParams) ! {
+	stopwatch := time.new_stopwatch()
+	for stopwatch.elapsed() < params.timeout {
+		if auth.is_authenticated(params.email)! { return }
+		time.sleep(2 * time.second)
+	}
+	return error('Authentication timeout.')
 }
 
 // function to check if an email is authenticated

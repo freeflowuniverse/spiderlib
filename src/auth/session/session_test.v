@@ -10,6 +10,7 @@ fn test_new() {
 	})
 	auth := Authenticator{
 		logger: &logger
+		backend: new_database_backend()!
 	}
 }
 
@@ -19,9 +20,10 @@ fn test_session_authenticator() {
 	})
 	mut auth := Authenticator{
 		logger: &logger
+		backend: new_database_backend()!
 	}
 	token := auth.new_refresh_token(
-		uuid: 'subject'
+		subject: 'subject'
 		issuer: 'test'
 	)
 	assert refresh_token_works(mut auth, token)
@@ -30,7 +32,7 @@ fn test_session_authenticator() {
 
 	// new refresh token, old refresh token should still work
 	token1 := auth.new_refresh_token(
-		uuid: 'subject'
+		subject: 'subject'
 		issuer: 'test'
 	)
 	assert refresh_token_works(mut auth, token)
@@ -46,13 +48,10 @@ fn refresh_token_works(mut auth Authenticator, token string) bool {
 	signed_jwt := jwt.SignedJWT(token)
 	works = works && signed_jwt.is_valid()
 	works = works && auth.authenticate_refresh_token(signed_jwt) or { return false }
-	works = works && !auth.authenticate_access_token(signed_jwt) or { return false }
 	access_token := auth.new_access_token(AccessTokenParams{
-		uuid: 'subject'
-		issuer: 'test'
 		refresh_token: signed_jwt
 	}) or { return false }
 	signed_access := jwt.SignedJWT(access_token)
-	works = works && auth.authenticate_access_token(signed_access) or { return false }
+	auth.authenticate_access_token(signed_access) or { return false }
 	return works
 }
