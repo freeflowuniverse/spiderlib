@@ -7,8 +7,8 @@ pub interface ITable {
 }
 
 pub struct Table {
-pub:
 	uikit.Component
+pub:
 	rows []IRow
 }
 
