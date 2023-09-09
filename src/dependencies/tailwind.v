@@ -25,7 +25,11 @@ fn (dependency TailwindCSS) load() ! {
 }
 
 pub fn (dependency TailwindCSS) precompile(path string) ! {
-	os.execute('pushd ${path} && tailwindcss -i ${path}/src/index.css -o ${path}/src/static/css/index.css --minify && popd')
+	script := '
+	pushd ${path}
+	tailwindcss -i ${path}/src/index.css -o ${path}/src/static/css/index.css --minify
+	popd'
+	os.execute(script)
 }
 
 fn (dependency TailwindCSS) update() ! {
