@@ -8,7 +8,8 @@ pub:
 	navbar  Navbar
 	sidebar Sidebar
 	footer  Footer
-	router  map[string]string
+	// page Page
+	router map[string]string
 pub mut:
 	route string
 }

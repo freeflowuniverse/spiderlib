@@ -9,16 +9,15 @@ pub struct DefaultForm {
 	uikit.Form
 }
 
-pub fn (form DefaultForm) html() string {
-	return $tmpl('templates/form/default-form.html')
-}
-
 pub struct SignInForm {
+	uikit.Form
 pub:
 	inputs []uikit.IInput
 	action htmx.HTMX
 }
 
-pub fn (form SignInForm) html() string {
-	return $tmpl('templates/form/sign-in-form.html')
+pub struct RegistrationForm {
+	uikit.Form
+pub:
+	login_text string // text shown below register button to redirect user to login if they have account
 }

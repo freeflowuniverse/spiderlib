@@ -2,8 +2,8 @@ module uikit
 
 import freeflowuniverse.spiderlib.htmx
 
-pub struct IForm {
-	Component
+pub interface IForm {
+	IComponent
 	htmx   htmx.HTMX
 	inputs []IInput
 	button IButton

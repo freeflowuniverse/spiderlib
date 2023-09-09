@@ -2,6 +2,10 @@ module flowbite
 
 type Input = BasicInput | InputWithLabel
 
+// pub interface IInput {
+// 	html() string
+// }
+
 pub struct BasicInput {
 pub:
 	label       string
@@ -10,18 +14,19 @@ pub:
 	placeholder string
 }
 
-pub fn (input BasicInput) html() string {
-	return $tmpl('templates/input/basic-input.html')
-}
-
 pub struct InputWithLabel {
 pub:
 	label       string
 	name        string
 	typ         string
 	placeholder string
+	required bool
 }
 
-pub fn (input InputWithLabel) html() string {
-	return $tmpl('templates/input/input-with-label.html')
+pub struct CheckboxInput {
+pub:
+	label string
+	name string
+	id string
+	required bool
 }

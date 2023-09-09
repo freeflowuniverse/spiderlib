@@ -9,5 +9,6 @@ pub interface IComponent {
 
 pub struct Component {
 pub:
+	id string
 	htmx htmx.HTMX
 }
