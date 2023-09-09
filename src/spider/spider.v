@@ -2,14 +2,10 @@ module spider
 
 import os
 import freeflowuniverse.crystallib.pathlib
-import freeflowuniverse.spiderlib.auth.email
-import freeflowuniverse.spiderlib.auth.session
-import freeflowuniverse.spiderlib.auth.tfconnect
 import freeflowuniverse.spiderlib.dependencies { IDependency }
 import freeflowuniverse.spiderlib.uikit.flowbite
 import time
 import json
-import strconv
 
 [noinit]
 struct Spider {

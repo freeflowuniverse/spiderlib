@@ -1,7 +1,6 @@
 module spider
 
 import os
-import freeflowuniverse.crystallib.pathlib
 
 pub fn (web Web) export() ! {
 	os.mkdir_all(web.path.path)!
@@ -35,7 +34,7 @@ pub fn (web Web) export_source() ! {
 	}
 	main_path := '${web.path.path}/src/main.v'
 	dollar := '$' // to print dollar sign
-	main_str := $tmpl('templates/main.v')
+	main_str := $tmpl('templates/main.vv')
 	os.write_file(main_path, main_str)!
 	web.export_static()!
 	web.export_pages()!
@@ -74,8 +73,6 @@ pub fn (web Web) export_pages() ! {
 		os.write_file('${content_dir}/${page.name}.md', '')!
 		page_str := page.export()
 		os.write_file('${source_dir}/${page.name}_view.v', page_str)!
-
-		// page.export()
 	}
 }
 
@@ -98,5 +95,5 @@ pub fn (page Page) export() string {
 	// todo: make content path
 	// todo: export route
 	// os.mkdir('')
-	return $tmpl('templates/page_view.v')
+	return $tmpl('templates/page_view.vv')
 }
