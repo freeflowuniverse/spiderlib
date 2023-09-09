@@ -26,6 +26,7 @@ fn (dependency TailwindCSS) load() ! {
 
 pub fn (dependency TailwindCSS) precompile(path string) ! {
 	script := '
+	#!/bin/bash
 	pushd ${path}
 	tailwindcss -i ${path}/src/index.css -o ${path}/src/static/css/index.css --minify
 	popd'
