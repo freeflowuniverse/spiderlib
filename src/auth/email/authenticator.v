@@ -2,6 +2,7 @@ module email
 
 import time
 import net.smtp
+import crypto.hmac
 import crypto.rand
 import log
 
@@ -106,7 +107,7 @@ pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! 
 // sends mail with login link
 pub fn (auth Authenticator) send_login_link(config SendMailConfig) ! {	
 	expiration := time.now().add(5 * time.minute)
-	data := '${email}.${expiration}' // data to be signed
+	data := '${config.email}.${expiration}' // data to be signed
 
 	bytes := rand.bytes(64) or { panic('Creating JWT Secret: ${err}') }
 
