@@ -3,6 +3,7 @@ module email
 import time
 import net.smtp
 import crypto.hmac
+import crypto.sha256
 import crypto.rand
 import log
 
