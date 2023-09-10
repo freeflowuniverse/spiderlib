@@ -161,7 +161,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 
 	data := '${attempt.email}.${attempt.expiration}' // data to be signed
 	signature_mirror := hmac.new(
-		auth.secret.bytes(),
+		hex.decode(auth.secret) or {panic(err)},
 		data.bytes(),
 		sha256.sum,
 		sha256.block_size
@@ -169,7 +169,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 	
 	decoded_signature := base64.url_decode(attempt.signature)
 	auth.logger.debug('Email Authenticator: decoded attempt signature ${decoded_signature}')
-	auth.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
+	auth.logger.debug('Email Authenticator: mirror signature ${signature_mirror}')
 
 	if !hmac.equal(decoded_signature, signature_mirror) {
 		return error('signature mismatch')
