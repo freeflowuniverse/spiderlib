@@ -153,7 +153,7 @@ pub:
 
 // sends mail with login link
 pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt) ! {	
-	app.logger.debug('Email Authenticator: Authenticating login attempt for ${attempt.email}')
+	auth.logger.info('Email Authenticator: Authenticating login attempt for ${attempt.email}')
 
 	if time.now() > attempt.expiration {
 		return error('link expired')
@@ -168,8 +168,8 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 	).bytestr().bytes()
 	
 	deccoded_signature := base64.url_decode(attempt.signature)
-	app.logger.debug('Email Authenticator: decoded attempt signature ${decoded_signature}')
-	app.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
+	auth.logger.debug('Email Authenticator: decoded attempt signature ${decoded_signature}')
+	auth.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
 
 	if !hmac.equal(deccoded_signature, signature_mirror) {
 		return error('signature mismatch')
