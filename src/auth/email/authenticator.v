@@ -119,7 +119,7 @@ pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {
 	).bytestr()
 
 	link := '<a href="${config.link}/${config.email}/${signature}">Click to login</a>'
-	auth.logger.debug('Created login link for ${config.email}')
+	auth.logger.debug('Email authenticator: Created login link ${link}')
 
 	mail := smtp.Mail{
 		to: config.email
@@ -138,7 +138,7 @@ pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {
 		password: config.smtp.password
 	)!
 	client.send(mail) or { panic('Error resolving email address') }
-	auth.logger.debug('Email Authenticator: Sent authentication email to ${config.email}')
+	auth.logger.debug('Email Authenticator: Sent login link to ${config.email}')
 	client.quit() or { panic('Could not close connection to server') }
 }
 
