@@ -6,6 +6,7 @@ import crypto.hmac
 import crypto.sha256
 import crypto.rand
 import encoding.hex
+import encoding.base64
 import log
 
 // Creates and updates, authenticates email authentication sessions
@@ -116,9 +117,10 @@ pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {
 		data.bytes(),
 		sha256.sum,
 		sha256.block_size
-	).bytestr()
+	)
 
-	link := '<a href="${config.link}/${config.email}/${signature}">Click to login</a>'
+	encoded_signature := base64.url_encode(signature.bytestr().bytes())
+	link := '<a href="${config.link}/${config.email}/${encoded_signature}">Click to login</a>'
 	auth.logger.debug('Email authenticator: Created login link ${link}')
 
 	mail := smtp.Mail{
