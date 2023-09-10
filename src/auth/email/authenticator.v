@@ -112,7 +112,7 @@ pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {
 	expiration := time.now().add(5 * time.minute)
 	data := '${config.email}.${expiration}' // data to be signed
 	signature := hmac.new(
-		hex.decode(auth.secret),
+		hex.decode(auth.secret) or {panic(err)},
 		data.bytes(),
 		sha256.sum,
 		sha256.block_size
