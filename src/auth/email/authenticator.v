@@ -171,7 +171,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 	auth.logger.debug('Email Authenticator: decoded attempt signature ${decoded_signature}')
 	auth.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
 
-	if !hmac.equal(deccoded_signature, signature_mirror) {
+	if !hmac.equal(decoded_signature, signature_mirror) {
 		return error('signature mismatch')
 	}
 }
