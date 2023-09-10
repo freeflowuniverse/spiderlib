@@ -167,7 +167,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 		sha256.block_size
 	).bytestr().bytes()
 	
-	deccoded_signature := base64.url_decode(attempt.signature)
+	decoded_signature := base64.url_decode(attempt.signature)
 	auth.logger.debug('Email Authenticator: decoded attempt signature ${decoded_signature}')
 	auth.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
 
