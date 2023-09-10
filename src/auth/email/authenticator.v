@@ -5,6 +5,7 @@ import net.smtp
 import crypto.hmac
 import crypto.sha256
 import crypto.rand
+import encoding.hex
 import log
 
 // Creates and updates, authenticates email authentication sessions
@@ -110,11 +111,8 @@ pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! 
 pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {	
 	expiration := time.now().add(5 * time.minute)
 	data := '${config.email}.${expiration}' // data to be signed
-
-	bytes := rand.bytes(64) or { panic('Creating JWT Secret: ${err}') }
-
 	signature := hmac.new(
-		auth.secret.bytes(),
+		hex.decode(auth.secret),
 		data.bytes(),
 		sha256.sum,
 		sha256.block_size
