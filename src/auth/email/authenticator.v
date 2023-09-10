@@ -105,7 +105,7 @@ pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! 
 }
 
 // sends mail with login link
-pub fn (auth Authenticator) send_login_link(config SendMailConfig) ! {	
+pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {	
 	expiration := time.now().add(5 * time.minute)
 	data := '${config.email}.${expiration}' // data to be signed
 
