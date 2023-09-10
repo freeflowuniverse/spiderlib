@@ -8,6 +8,7 @@ import log
 // Creates and updates, authenticates email authentication sessions
 [noinit]
 pub struct Authenticator {
+	secret string
 mut: // route which will handle the authentication link click
 	backend IBackend
 	logger   &log.Logger = &log.Logger(&log.Log{
@@ -28,7 +29,8 @@ pub mut:
 
 [params]
 pub struct AuthenticatorConfig {
-	backend IBackend [required]
+	secret string
+	backend IBackend
 	logger &log.Logger = &log.Logger(&log.Log{
 		level: .info
 	})
@@ -80,6 +82,42 @@ pub fn (mut auth Authenticator) send_verification_mail(config SendMailConfig) ! 
 	)!
 
 	link := '<a href="${config.link}/${config.email}/${auth_code.hex()}">Click to authenticate</a>'
+	mail := smtp.Mail{
+		to: config.email
+		from: config.mail.from
+		subject: config.mail.subject
+		body_type: .html
+		body: '${config.mail.body}\n${link}'
+	}
+
+	// send email with link in body
+	mut client := smtp.new_client(
+		server: config.smtp.server
+		from: config.smtp.from
+		port: config.smtp.port
+		username: config.smtp.username
+		password: config.smtp.password
+	)!
+	client.send(mail) or { panic('Error resolving email address') }
+	auth.logger.debug('Email Authenticator: Sent authentication email to ${config.email}')
+	client.quit() or { panic('Could not close connection to server') }
+}
+
+// sends mail with login link
+pub fn (auth Authenticator) send_login_link(config SendMailConfig) ! {	
+	expiration := time.now().add(5 * time.minute)
+	data := '${email}.${expiration}' // data to be signed
+
+	bytes := rand.bytes(64) or { panic('Creating JWT Secret: ${err}') }
+
+	signature := hmac.new(
+		auth.secret.bytes(),
+		data.bytes(),
+		sha256.sum,
+		sha256.block_size
+	).bytestr()
+
+	link := '<a href="${config.link}/${config.email}/${signature}">Click to login</a>'
 	mail := smtp.Mail{
 		to: config.email
 		from: config.mail.from
