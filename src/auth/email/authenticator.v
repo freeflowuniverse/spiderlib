@@ -34,7 +34,7 @@ pub struct AuthenticatorConfig {
 	secret string
 	backend IBackend
 	logger &log.Logger = &log.Logger(&log.Log{
-		level: .info
+		level: .debug
 	})
 }
 
@@ -42,6 +42,7 @@ pub fn new(config AuthenticatorConfig) Authenticator {
 	return Authenticator {
 		backend: config.backend
 		logger: config.logger
+		secret: config.secret
 	}
 }
 
@@ -120,6 +121,8 @@ pub fn (mut auth Authenticator) send_login_link(config SendMailConfig) ! {
 	).bytestr()
 
 	link := '<a href="${config.link}/${config.email}/${signature}">Click to login</a>'
+	auth.logger.debug('Created login link for ${config.email}')
+
 	mail := smtp.Mail{
 		to: config.email
 		from: config.mail.from
