@@ -156,7 +156,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 	app.logger.debug('Email Authenticator: Authenticating login attempt for ${attempt.email}')
 
 	if time.now() > attempt.expiration {
-		return LoginError{reason: .link_expired}
+		return error('link expired')
 	}
 
 	data := '${attempt.email}.${attempt.expiration}' // data to be signed
@@ -172,7 +172,7 @@ pub fn (mut auth Authenticator) authenticate_login_attempt(attempt LoginAttempt)
 	app.logger.debug('Email Authenticator: mirror signature ${decoded_signature}')
 
 	if !hmac.equal(deccoded_signature, signature_mirror) {
-		return LoginError{reason: .false_signature}
+		return error('signature mismatch')
 	}
 }
 
